@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
+import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
 
 class GetStartedPage extends StatefulWidget {
   const GetStartedPage({Key? key}) : super(key: key);
@@ -102,25 +103,11 @@ class _GetStartedPageState extends State<GetStartedPage> {
                         ),
                       ),
                     ),
-                    Material(
-                      color: AppColors.secondary,
-                      borderRadius: BorderRadius.circular(8),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, Routes.loginPage);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 70),
-                          child: Text(
-                            "Get Started",
-                            style: TextStyle(
-                                fontFamily: AppFontFamily.fontSecondary,
-                                fontSize: 18,
-                                color: AppColors.white),
-                          ),
-                        ),
-                      ),
+                    ButtonWidget(
+                      label: "Get started",
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.loginPage);
+                      },
                     )
                   ],
                 ),

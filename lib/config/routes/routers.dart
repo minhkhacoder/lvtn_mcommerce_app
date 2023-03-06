@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/modules/auth/login_page.dart';
+import 'package:mcommerce_app/modules/auth/signup_page.dart';
 import 'package:mcommerce_app/modules/home/get_started_page.dart';
 import 'package:mcommerce_app/modules/home/home_page.dart';
 
@@ -17,6 +18,10 @@ class Routers {
       case "LoginPage":
         {
           return MaterialPageRoute(builder: (_) => LoginPage());
+        }
+      case "SignUpPage":
+        {
+          return MaterialPageRoute(builder: (_) => SignUpPage());
         }
       default:
         return _errorRoute();
