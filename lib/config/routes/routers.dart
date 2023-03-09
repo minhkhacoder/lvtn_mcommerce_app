@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mcommerce_app/modules/auth/login_page.dart';
-import 'package:mcommerce_app/modules/auth/signup_page.dart';
-import 'package:mcommerce_app/modules/home/get_started_page.dart';
-import 'package:mcommerce_app/modules/home/home_page.dart';
+import 'package:mcommerce_app/screens/auth/login_page.dart';
+import 'package:mcommerce_app/screens/auth/signup_page.dart';
+import 'package:mcommerce_app/screens/home/get_started_page.dart';
+import 'package:mcommerce_app/screens/home/home_page.dart';
 
 class Routers {
   static Route<dynamic>? generateRoute(RouteSettings settings) {

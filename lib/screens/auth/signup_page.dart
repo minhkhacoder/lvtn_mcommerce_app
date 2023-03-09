@@ -1,16 +1,16 @@
-import 'package:mcommerce_app/modules/auth/widgets/login_form.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:mcommerce_app/screens/auth/widgets/signup_form.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -26,9 +26,9 @@ class _LoginPageState extends State<LoginPage> {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                padding: EdgeInsets.only(top: 292, left: 24, right: 24),
+                padding: EdgeInsets.only(top: 280, left: 24, right: 24),
                 decoration: BoxDecoration(color: AppColors.white),
-                child: LoginForm(),
+                child: SignUpForm(),
               ),
             ),
             Align(
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(top: 90, left: 24, bottom: 8),
                     child: Text(
-                      "LOGIN",
+                      "SIGNUP",
                       style: TextStyle(
                           fontFamily: AppFontFamily.fontPrimary,
                           fontSize: 24,
@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(left: 24),
                     child: Text(
-                      "Enter your phone and password",
+                      "Enter your credentials to continue",
                       style: TextStyle(
                           fontFamily: AppFontFamily.fontSecondary,
                           fontSize: 16,

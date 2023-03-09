@@ -6,6 +6,7 @@ class InputWidget extends StatefulWidget {
   final String labelText;
   final TextInputType textInputType;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final bool obscureText;
   final FormFieldValidator<String> validator;
   final FormFieldSetter<String>? onSaved;
@@ -17,6 +18,7 @@ class InputWidget extends StatefulWidget {
     this.textInputType = TextInputType.text,
     this.suffixIcon,
     this.obscureText = false,
+    this.prefixIcon,
   }) : super(key: key);
 
   @override
@@ -41,21 +43,21 @@ class _InputWidgetState extends State<InputWidget> {
       child: TextFormField(
         controller: this._controller,
         decoration: InputDecoration(
-          labelText: widget.labelText,
-          labelStyle: TextStyle(
-            color: AppColors.darkGray,
-            fontSize: 16,
-            fontFamily: AppFontFamily.fontSecondary,
-            fontWeight: FontWeight.w600,
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.line),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary),
-          ),
-          suffixIcon: widget.suffixIcon,
-        ),
+            labelText: widget.labelText,
+            labelStyle: TextStyle(
+              color: AppColors.darkGray,
+              fontSize: 16,
+              fontFamily: AppFontFamily.fontSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppColors.line),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppColors.primary),
+            ),
+            suffixIcon: widget.suffixIcon,
+            prefixIcon: widget.prefixIcon),
         cursorColor: AppColors.primary,
         keyboardType: widget.textInputType,
         validator: widget.validator,

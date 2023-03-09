@@ -104,7 +104,9 @@ class _SignUpFormState extends State<SignUpForm> {
                 foregroundColor:
                     MaterialStateProperty.all<Color>(AppColors.darkGray),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.homePage);
+              },
               child: Text(
                 'Skip',
                 style: TextStyle(fontSize: 24),
