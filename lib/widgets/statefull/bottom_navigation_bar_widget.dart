@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
+
 import 'package:mcommerce_app/widgets/stateless/gradient_widget.dart';
 
 class BottomNavigationBarWidget extends StatefulWidget {
-  const BottomNavigationBarWidget({Key? key}) : super(key: key);
+  final int selectedIndex;
+  const BottomNavigationBarWidget({Key? key, required this.selectedIndex})
+      : super(key: key);
 
   @override
   _BottomNavigationBarWidgetState createState() =>
@@ -11,24 +14,12 @@ class BottomNavigationBarWidget extends StatefulWidget {
 }
 
 class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
-  // static const List<Widget> _widgetOptions = <Widget>[
-  //   Text(
-  //     'Home',
-  //   ),
-  //   Text(
-  //     'Favorites',
-  //   ),
-  //   Text(
-  //     'Settings',
-  //   ),
-  // ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.selectedIndex;
   }
 
   @override

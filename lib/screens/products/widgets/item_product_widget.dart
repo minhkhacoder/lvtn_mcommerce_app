@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mcommerce_app/config/routes/routes.dart';
+import 'package:mcommerce_app/screens/products/product_detail_page.dart';
 import 'package:mcommerce_app/screens/products/widgets/image_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/price_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/title_product_widget.dart';
@@ -25,7 +27,14 @@ class ItemProductWidget extends StatelessWidget {
           child: Column(
             children: [
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetailPage(product: item),
+                    ),
+                  );
+                },
                 child: Padding(
                   padding: EdgeInsets.zero,
                   child: ImageProductWidget(

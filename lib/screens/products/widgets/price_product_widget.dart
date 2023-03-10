@@ -5,12 +5,14 @@ class PriceProductWidget extends StatelessWidget {
   final double originalPrice;
   final double salePrice;
   final bool hasSale;
+  final double fontSize;
 
   const PriceProductWidget({
     Key? key,
     required this.originalPrice,
     this.hasSale = false,
     this.salePrice = 0.0,
+    this.fontSize = 18.0,
   }) : super(key: key);
 
   @override
@@ -23,16 +25,16 @@ class PriceProductWidget extends StatelessWidget {
             Text(
               '\$${salePrice.toStringAsFixed(2)}',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: fontSize,
                 color: AppColors.red,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          SizedBox(width: 5),
+          hasSale ? SizedBox(width: 5) : SizedBox(width: 0),
           Text(
             '\$${originalPrice.toStringAsFixed(2)}',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: fontSize,
               color: hasSale ? AppColors.gray : AppColors.dark,
               decoration: hasSale ? TextDecoration.lineThrough : null,
               fontWeight: hasSale ? FontWeight.normal : FontWeight.bold,

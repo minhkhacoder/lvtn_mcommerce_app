@@ -1,57 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
-import 'package:mcommerce_app/widgets/statefull/bottom_navigation_bar_widget.dart';
+import 'package:mcommerce_app/screens/categories/category_page.dart';
+import 'package:mcommerce_app/screens/categories/widgets/app_bar_category_widget.dart';
+import 'package:mcommerce_app/screens/home/widgets/app_bar_home_widget.dart';
+import 'package:mcommerce_app/screens/home/widgets/home_body_widget.dart';
+
+import 'package:mcommerce_app/widgets/stateless/gradient_widget.dart';
 
 class LayoutWidget extends StatefulWidget {
-  final Widget? leading;
-  final Widget? title;
-  final List<Widget>? actions;
-  final PreferredSizeWidget? bottom;
   final Widget? body;
-  final double heightSize;
 
-  const LayoutWidget(
-      {Key? key,
-      this.leading,
-      this.title,
-      this.actions,
-      this.body,
-      this.heightSize = 80.0,
-      this.bottom})
-      : super(key: key);
+  final Widget? appBar;
+  final int selectedIndex;
+
+  const LayoutWidget({
+    Key? key,
+    this.body,
+    this.appBar,
+    this.selectedIndex = 0,
+  }) : super(key: key);
 
   @override
   _LayoutWidgetState createState() => _LayoutWidgetState();
 }
 
+final List<Widget> _pages = [HomeBodyWidget(), CategoryPage()];
+final List<Widget> _appBar = [AppBarHomeWidget(), AppBarCategoryWidget()];
+
 class _LayoutWidgetState extends State<LayoutWidget> {
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.selectedIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: widget.leading,
-            title: widget.title,
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.primary,
-                      AppColors.third,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(14.0))),
-            ),
-            actions: widget.actions,
-            bottom: widget.bottom,
+          child: IndexedStack(
+            index: _selectedIndex,
+            children: _appBar,
           ),
-          preferredSize: Size.fromHeight(widget.heightSize)),
-      body: widget.body,
-      bottomNavigationBar: BottomNavigationBarWidget(),
+          preferredSize: Size.fromHeight(110.0)),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: AppColors.white,
+        shape: AutomaticNotchedShape(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
+          ),
+          StadiumBorder(side: BorderSide.none),
+        ),
+        notchMargin: 2.0,
+        child: Container(
+          height: 68,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 5,
+                spreadRadius: 2,
+                offset: Offset(0, 3),
+              ),
+            ],
+            color: AppColors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              IconButton(
+                color: _selectedIndex == 0 ? AppColors.primary : AppColors.gray,
+                iconSize: 30,
+                icon: _selectedIndex == 0
+                    ? GradientWidget(child: Icon(Icons.home))
+                    : Icon(Icons.home),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 0;
+                  });
+                },
+              ),
+              IconButton(
+                color: _selectedIndex == 1 ? AppColors.primary : AppColors.gray,
+                iconSize: 30,
+                icon: _selectedIndex == 1
+                    ? GradientWidget(child: Icon(Icons.widgets_outlined))
+                    : Icon(Icons.widgets_outlined),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 1;
+                  });
+                },
+              ),
+              IconButton(
+                color: _selectedIndex == 2 ? AppColors.primary : AppColors.gray,
+                iconSize: 30,
+                icon: _selectedIndex == 2
+                    ? GradientWidget(child: Icon(Icons.favorite))
+                    : Icon(Icons.favorite),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 2;
+                  });
+                },
+              ),
+              IconButton(
+                color: _selectedIndex == 3 ? AppColors.primary : AppColors.gray,
+                iconSize: 30,
+                icon: _selectedIndex == 3
+                    ? GradientWidget(child: Icon(Icons.person_outline))
+                    : Icon(Icons.person_outlined),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 3;
+                  });
+                },
+              ),
+              SizedBox(
+                width: 0.0,
+              )
+            ],
+          ),
+        ),
+      ),
       floatingActionButton: Stack(
         children: <Widget>[
           FloatingActionButton(

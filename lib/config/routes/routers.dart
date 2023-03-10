@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/screens/auth/login_page.dart';
 import 'package:mcommerce_app/screens/auth/signup_page.dart';
+import 'package:mcommerce_app/screens/categories/category_page.dart';
 import 'package:mcommerce_app/screens/home/get_started_page.dart';
 import 'package:mcommerce_app/screens/home/home_page.dart';
+import 'package:mcommerce_app/screens/products/product_detail_page.dart';
+import 'package:mcommerce_app/widgets/stateless/layout-widget.dart';
 
 class Routers {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -23,6 +26,15 @@ class Routers {
         {
           return MaterialPageRoute(builder: (_) => SignUpPage());
         }
+      case "CategoryPage":
+        {
+          return MaterialPageRoute(builder: (_) => CategoryPage());
+        }
+      case "LayoutPage":
+        {
+          return MaterialPageRoute(builder: (_) => LayoutWidget());
+        }
+
       default:
         return _errorRoute();
     }
