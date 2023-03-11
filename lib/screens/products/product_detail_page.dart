@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/screens/auth/widgets/info_store_widget.dart';
+import 'package:mcommerce_app/screens/products/widgets/item_cart_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/price_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/product_description_widget.dart';
+import 'package:mcommerce_app/screens/products/widgets/product_slide_widget.dart';
+import 'package:mcommerce_app/screens/products/widgets/quantity_widget.dart';
+import 'package:mcommerce_app/screens/products/widgets/review_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/title_product_widget.dart';
-import 'package:mcommerce_app/widgets/stateless/gradient_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/star_widget.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  final Map<String, dynamic> product;
+  final Map<String, dynamic> products;
   final int selectedIndex;
   const ProductDetailPage(
-      {Key? key, required this.product, this.selectedIndex = 0})
+      {Key? key, required this.products, this.selectedIndex = 0})
       : super(key: key);
 
   @override
@@ -22,6 +25,7 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   int currentIndex = 0;
+  bool isOpenItemProduct = false;
   final CarouselController carouselController = CarouselController();
 
   late int _selectedIndex;
@@ -58,7 +62,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               children: [
                 SizedBox(
                   child: CarouselSlider(
-                    items: widget.product["children"]
+                    items: widget.products["children"]
                         .map<Widget>((item) => Container(
                               margin: EdgeInsets.symmetric(horizontal: 6.0),
                               child: ClipRRect(
@@ -89,7 +93,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: widget.product["children"]
+                  children: widget.products["children"]
                       .asMap()
                       .entries
                       .map<Widget>((entry) => GestureDetector(
@@ -145,7 +149,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         height: 16.0,
                       ),
                       TitleProductWidget(
-                          title: widget.product["pro_name"], fontSize: 18),
+                          title: widget.products["pro_name"], fontSize: 18),
                       SizedBox(
                         height: 16.0,
                       ),
@@ -176,7 +180,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   borderRadius: BorderRadius.all(Radius.circular(8.0))),
               child: ProductDescriptionWidget(
                   description:
-                      "A play on speed and style, the Urban Track takes the street head-on with no regrets. With its performance inspired aluminium frame and fork paired with comfortable riser handlebars, you can effortlessly navigate whatever life throws at you while looking your best. We love how it can fit any occasion."))
+                      "A play on speed and style, the Urban Track takes the street head-on with no regrets. With its performance inspired aluminium frame and fork paired with comfortable riser handlebars, you can effortlessly navigate whatever life throws at you while looking your best. We love how it can fit any occasion.")),
+          ReviewProductWidget(),
+          ProductSlideWidget()
         ],
       )),
       bottomNavigationBar: BottomAppBar(
@@ -192,8 +198,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
         notchMargin: 2.0,
         child: Container(
-          height: 98,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          height: isOpenItemProduct
+              ? MediaQuery.of(context).size.height * 0.3
+              : 120.0,
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 28.0),
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -209,47 +217,67 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               topRight: Radius.circular(24.0),
             ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              IconButton(
-                  onPressed: (() {
-                    Navigator.of(context).pop();
-                  }),
-                  icon: Icon(
-                    Icons.keyboard_backspace,
-                    color: AppColors.darkGray,
-                    size: 34.0,
-                  )),
-              Container(
-                width: 230.0,
-                height: 48.0,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.third],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: TextButton(
-                  onPressed: (() {}),
-                  child: Text(
-                    "Add to Cart",
-                    style: TextStyle(color: AppColors.white, fontSize: 18),
-                  ),
-                ),
-              ),
-              IconButton(
-                  onPressed: (() {}),
-                  icon: Icon(
-                    Icons.favorite_outline,
-                    color: AppColors.primary,
-                    size: 34.0,
-                  )),
-            ],
+          child: Container(
+            child: Column(
+              mainAxisAlignment: isOpenItemProduct
+                  ? MainAxisAlignment.spaceBetween
+                  : MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (isOpenItemProduct)
+                  ItemCartWidget(products: widget.products),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                        onPressed: (() {
+                          Navigator.of(context).pop();
+                          setState(() {
+                            isOpenItemProduct = false;
+                          });
+                        }),
+                        icon: Icon(
+                          Icons.keyboard_backspace,
+                          color: AppColors.darkGray,
+                          size: 34.0,
+                        )),
+                    Container(
+                      width: 230.0,
+                      height: 48.0,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [AppColors.primary, AppColors.third],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: TextButton(
+                        onPressed: (() {
+                          setState(() {
+                            isOpenItemProduct = true;
+                          });
+                        }),
+                        child: Text(
+                          "Add to Cart",
+                          style:
+                              TextStyle(color: AppColors.white, fontSize: 18),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: (() {}),
+                        icon: Icon(
+                          Icons.favorite_outline,
+                          color: AppColors.primary,
+                          size: 34.0,
+                        )),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -39,7 +39,7 @@ class ImageProductWidget extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(100.0))),
               child: IconButton(
                 iconSize: 24,
-                icon: Icon(Icons.favorite, color: AppColors.primary),
+                icon: Icon(Icons.favorite_outline, color: AppColors.primary),
                 onPressed: () {},
               ),
             ))

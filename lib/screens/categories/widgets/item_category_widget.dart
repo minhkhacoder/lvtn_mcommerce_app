@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
-import 'package:mcommerce_app/screens/products/widgets/image_product_widget.dart';
 
 class ItemCategoryWidget extends StatelessWidget {
   const ItemCategoryWidget({Key? key}) : super(key: key);
