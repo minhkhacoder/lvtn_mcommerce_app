@@ -63,10 +63,11 @@ class _SliderWidgetState extends State<SliderWidget> {
                                 BorderRadius.all(Radius.circular(8.0)),
                             child: Stack(
                               children: [
-                                Image.network(
-                                  item['image_path'],
+                                Image.asset(
+                                  "assets/images/sale1.png",
                                   fit: BoxFit.cover,
                                   width: double.infinity,
+                                  height: double.infinity,
                                 ),
                                 Positioned(
                                     child: Padding(

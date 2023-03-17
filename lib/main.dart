@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mcommerce_app/config/routes/routers.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
-import 'package:mcommerce_app/config/themes/app_colors.dart';
+import 'package:mcommerce_app/providers/product_provider.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -11,11 +14,16 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'M-Commerce App',
-      initialRoute: Routes.getStartedPage,
-      onGenerateRoute: Routers.generateRoute,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'M-Commerce App',
+        initialRoute: Routes.getStartedPage,
+        onGenerateRoute: Routers.generateRoute,
+      ),
     );
   }
 }

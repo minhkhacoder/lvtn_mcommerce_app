@@ -4,6 +4,8 @@ import 'package:mcommerce_app/screens/categories/category_page.dart';
 import 'package:mcommerce_app/screens/categories/widgets/app_bar_category_widget.dart';
 import 'package:mcommerce_app/screens/home/widgets/app_bar_home_widget.dart';
 import 'package:mcommerce_app/screens/home/widgets/home_body_widget.dart';
+import 'package:mcommerce_app/screens/search/search_page.dart';
+import 'package:mcommerce_app/screens/search/widgets/app_bar_search_widget.dart';
 
 import 'package:mcommerce_app/widgets/stateless/gradient_widget.dart';
 
@@ -25,7 +27,10 @@ class LayoutWidget extends StatefulWidget {
 }
 
 final List<Widget> _pages = [HomeBodyWidget(), CategoryPage()];
-final List<Widget> _appBar = [AppBarHomeWidget(), AppBarCategoryWidget()];
+final List<Widget> _appBar = [
+  AppBarHomeWidget(),
+  AppBarCategoryWidget(),
+];
 
 class _LayoutWidgetState extends State<LayoutWidget> {
   late int _selectedIndex;
@@ -39,140 +44,143 @@ class _LayoutWidgetState extends State<LayoutWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-          child: IndexedStack(
-            index: _selectedIndex,
-            children: _appBar,
-          ),
-          preferredSize: Size.fromHeight(110.0)),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: AppColors.white,
-        shape: AutomaticNotchedShape(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12.0),
-              topRight: Radius.circular(12.0),
+        appBar: PreferredSize(
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: _appBar,
             ),
-          ),
-          StadiumBorder(side: BorderSide.none),
+            preferredSize: Size.fromHeight(110.0)),
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _pages,
         ),
-        notchMargin: 2.0,
-        child: Container(
-          height: 68,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                blurRadius: 5,
-                spreadRadius: 2,
-                offset: Offset(0, 3),
+        bottomNavigationBar: BottomAppBar(
+          color: AppColors.white,
+          shape: AutomaticNotchedShape(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.0),
+                topRight: Radius.circular(12.0),
               ),
-            ],
-            color: AppColors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12.0),
-              topRight: Radius.circular(12.0),
             ),
+            StadiumBorder(side: BorderSide.none),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              IconButton(
-                color: _selectedIndex == 0 ? AppColors.primary : AppColors.gray,
-                iconSize: 30,
-                icon: _selectedIndex == 0
-                    ? GradientWidget(child: Icon(Icons.home))
-                    : Icon(Icons.home),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 0;
-                  });
-                },
+          notchMargin: 2.0,
+          child: Container(
+            height: 68,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 5,
+                  spreadRadius: 2,
+                  offset: Offset(0, 3),
+                ),
+              ],
+              color: AppColors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.0),
+                topRight: Radius.circular(12.0),
               ),
-              IconButton(
-                color: _selectedIndex == 1 ? AppColors.primary : AppColors.gray,
-                iconSize: 30,
-                icon: _selectedIndex == 1
-                    ? GradientWidget(child: Icon(Icons.widgets_outlined))
-                    : Icon(Icons.widgets_outlined),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 1;
-                  });
-                },
-              ),
-              IconButton(
-                color: _selectedIndex == 2 ? AppColors.primary : AppColors.gray,
-                iconSize: 30,
-                icon: _selectedIndex == 2
-                    ? GradientWidget(child: Icon(Icons.favorite))
-                    : Icon(Icons.favorite),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 2;
-                  });
-                },
-              ),
-              IconButton(
-                color: _selectedIndex == 3 ? AppColors.primary : AppColors.gray,
-                iconSize: 30,
-                icon: _selectedIndex == 3
-                    ? GradientWidget(child: Icon(Icons.person_outline))
-                    : Icon(Icons.person_outlined),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 3;
-                  });
-                },
-              ),
-              SizedBox(
-                width: 0.0,
-              )
-            ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                IconButton(
+                  color:
+                      _selectedIndex == 0 ? AppColors.primary : AppColors.gray,
+                  iconSize: 30,
+                  icon: _selectedIndex == 0
+                      ? GradientWidget(child: Icon(Icons.home))
+                      : Icon(Icons.home),
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 0;
+                    });
+                  },
+                ),
+                IconButton(
+                  color:
+                      _selectedIndex == 1 ? AppColors.primary : AppColors.gray,
+                  iconSize: 30,
+                  icon: _selectedIndex == 1
+                      ? GradientWidget(child: Icon(Icons.widgets_outlined))
+                      : Icon(Icons.widgets_outlined),
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 1;
+                    });
+                  },
+                ),
+                IconButton(
+                  color:
+                      _selectedIndex == 2 ? AppColors.primary : AppColors.gray,
+                  iconSize: 30,
+                  icon: _selectedIndex == 2
+                      ? GradientWidget(child: Icon(Icons.favorite))
+                      : Icon(Icons.favorite),
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 2;
+                    });
+                  },
+                ),
+                IconButton(
+                  color:
+                      _selectedIndex == 3 ? AppColors.primary : AppColors.gray,
+                  iconSize: 30,
+                  icon: _selectedIndex == 3
+                      ? GradientWidget(child: Icon(Icons.person_outline))
+                      : Icon(Icons.person_outlined),
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 3;
+                    });
+                  },
+                ),
+                SizedBox(
+                  width: 0.0,
+                )
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: Stack(
-        children: <Widget>[
-          FloatingActionButton(
-            backgroundColor: AppColors.primary,
-            onPressed: () {
-              // mở trang giỏ hàng khi người dùng nhấn vào nút
-            },
-            child: const Icon(
-              Icons.shopping_cart,
+        floatingActionButton: Stack(
+          children: <Widget>[
+            FloatingActionButton(
+              backgroundColor: AppColors.primary,
+              onPressed: () {
+                // mở trang giỏ hàng khi người dùng nhấn vào nút
+              },
+              child: const Icon(
+                Icons.shopping_cart,
+              ),
             ),
-          ),
-          Positioned(
-            right: 0,
-            child: Container(
-              padding: EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                color: AppColors.orange,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              constraints: BoxConstraints(
-                minWidth: 16,
-                minHeight: 16,
-              ),
-              child: Text(
-                '0',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
+            Positioned(
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                  color: AppColors.orange,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                constraints: BoxConstraints(
+                  minWidth: 16,
+                  minHeight: 16,
+                ),
+                child: Text(
+                  '0',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-    );
+            )
+          ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked);
   }
 }

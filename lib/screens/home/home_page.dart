@@ -89,7 +89,9 @@ class _HomePageState extends State<HomePage> {
           child: Column(children: [
             SliderWidget(),
             SlideCategoryWidget(),
-            ProductsPage()
+            ProductsPage(
+              title: 'Featured',
+            )
           ]),
         ),
       ),

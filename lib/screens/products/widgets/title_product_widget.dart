@@ -15,8 +15,10 @@ class TitleProductWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String limitedTitle =
+        title.length > 30 ? '${title.substring(0, 30)}...' : title;
     return Text(
-      title,
+      limitedTitle,
       style: TextStyle(
           color: AppColors.dark,
           fontFamily: AppFontFamily.fontSecondary,

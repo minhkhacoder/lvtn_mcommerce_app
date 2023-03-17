@@ -18,8 +18,13 @@ class _HomeBodyWidgetState extends State<HomeBodyWidget> {
       decoration: BoxDecoration(color: AppColors.bg),
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 16.0),
       child: SingleChildScrollView(
-        child: Column(
-            children: [SliderWidget(), SlideCategoryWidget(), ProductsPage()]),
+        child: Column(children: [
+          SliderWidget(),
+          SlideCategoryWidget(),
+          ProductsPage(
+            title: 'Featured',
+          )
+        ]),
       ),
     );
   }
