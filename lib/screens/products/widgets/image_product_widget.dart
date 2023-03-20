@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 
@@ -15,21 +16,6 @@ class _ImageProductWidgetState extends State<ImageProductWidget> {
   bool _isLoading = true;
 
   @override
-  void initState() {
-    super.initState();
-    _loadImage();
-  }
-
-  void _loadImage() async {
-    final image = NetworkImage(widget.image_url);
-    await image.evict();
-    await precacheImage(image, context);
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -39,27 +25,43 @@ class _ImageProductWidgetState extends State<ImageProductWidget> {
       padding: EdgeInsets.all(10.0),
       child: Stack(
         children: [
-          _isLoading
-              ? Container(
+          Container(
+            width: 163,
+            height: 163,
+            child: CachedNetworkImage(
+              imageUrl: widget.image_url,
+              fadeInDuration: Duration(milliseconds: 300),
+              fadeOutDuration: Duration(milliseconds: 300),
+              imageBuilder: (context, imageProvider) {
+                _isLoading = false;
+                return Container(
                   width: 163,
                   height: 163,
-                  child: Center(
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                )
-              : Image.network(
-                  widget.image_url,
-                  width: 163,
-                  height: 163,
-                  fit: BoxFit.contain,
-                  alignment: Alignment.center,
-                ),
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.contain)),
+                );
+              },
+              placeholder: (context, url) {
+                return _isLoading
+                    ? Container(
+                        width: 163,
+                        height: 163,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      )
+                    : Container();
+              },
+              errorWidget: (context, url, error) => Container(
+                width: 163,
+                height: 163,
+                child: Icon(Icons.error),
+              ),
+            ),
+          ),
           Positioned(
             bottom: 0,
             right: 0,

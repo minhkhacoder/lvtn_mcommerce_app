@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
+import 'package:mcommerce_app/providers/product_provider.dart';
 import 'package:mcommerce_app/screens/auth/widgets/info_store_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/item_cart_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/price_product_widget.dart';
@@ -11,12 +13,13 @@ import 'package:mcommerce_app/screens/products/widgets/quantity_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/review_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/title_product_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/star_widget.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  final Map<String, dynamic> products;
+  final Map<String, dynamic> item;
   final int selectedIndex;
   const ProductDetailPage(
-      {Key? key, required this.products, this.selectedIndex = 0})
+      {Key? key, required this.item, this.selectedIndex = 0})
       : super(key: key);
 
   @override
@@ -27,7 +30,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   int currentIndex = 0;
   bool isOpenItemProduct = false;
   final CarouselController carouselController = CarouselController();
-
+  bool _isLoading = true;
   late int _selectedIndex;
 
   @override
@@ -37,14 +40,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (mounted) {
+      // kiểm tra xem widget đã bị dispose hay chưa
+      Provider.of<ProductProvider>(context, listen: false).fetchProducts();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    List<String> images = widget.item["image"];
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SingleChildScrollView(
           child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(top: 30.0, bottom: 16.0),
+            padding: EdgeInsets.only(top: 30.0),
             decoration: BoxDecoration(
                 color: AppColors.white,
                 boxShadow: [
@@ -62,17 +75,46 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               children: [
                 SizedBox(
                   child: CarouselSlider(
-                    items: widget.products["children"]
-                        .map<Widget>((item) => Container(
+                    items: images
+                        .map((item) => Container(
                               margin: EdgeInsets.symmetric(horizontal: 6.0),
                               child: ClipRRect(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8.0)),
-                                child: Image.network(
-                                  item["child"],
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 375,
-                                  fit: BoxFit.cover,
+                                child: CachedNetworkImage(
+                                  imageUrl: item.toString(),
+                                  fadeInDuration: Duration(milliseconds: 300),
+                                  fadeOutDuration: Duration(milliseconds: 300),
+                                  imageBuilder: (context, imageProvider) {
+                                    _isLoading = false;
+                                    return Container(
+                                      width: double.infinity,
+                                      height: 375.0,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.contain)),
+                                    );
+                                  },
+                                  placeholder: (context, url) {
+                                    return _isLoading
+                                        ? Container(
+                                            width: double.infinity,
+                                            height: 375.0,
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                color: AppColors.primary,
+                                              ),
+                                            ),
+                                          )
+                                        : Container();
+                                  },
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                    width: double.infinity,
+                                    height: 375.0,
+                                    child: Icon(Icons.error),
+                                  ),
                                 ),
                               ),
                             ))
@@ -93,7 +135,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: widget.products["children"]
+                  children: images
                       .asMap()
                       .entries
                       .map<Widget>((entry) => GestureDetector(
@@ -136,7 +178,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             width: 10.0,
                           ),
                           Text(
-                            "8 reviews",
+                            '${widget.item["rat_count"].toString()} reviews',
                             style: TextStyle(
                                 color: AppColors.darkGray,
                                 fontFamily: AppFontFamily.fontSecondary,
@@ -148,41 +190,65 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       SizedBox(
                         height: 16.0,
                       ),
-                      TitleProductWidget(
-                          title: widget.products["pro_name"], fontSize: 18),
+                      // TitleProductWidget(
+                      //     title: widget.item["name"].toString(), fontSize: 18),
+                      Text(
+                        widget.item["name"].toString(),
+                        style: TextStyle(
+                            color: AppColors.dark,
+                            fontFamily: AppFontFamily.fontSecondary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20,
+                            letterSpacing: -0.15),
+                      ),
                       SizedBox(
                         height: 16.0,
                       ),
-                      PriceProductWidget(originalPrice: 249.99, fontSize: 30),
+                      PriceProductWidget(
+                          originalPrice:
+                              double.parse(widget.item["price"].toString()),
+                          fontSize: 28),
                       SizedBox(
                         height: 24.0,
                       ),
-                      InfoStoreWidget()
+                      InfoStoreWidget(
+                        seller: widget.item["seller"],
+                      )
                     ],
                   ),
                 ),
+                Container(
+                    margin: EdgeInsets.only(top: 16.0, bottom: 16.0),
+                    padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                    decoration: BoxDecoration(
+                        color: AppColors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            blurRadius: 5,
+                            spreadRadius: 2,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    child: ProductDescriptionWidget(
+                        description: widget.item["desc"].toString())),
+                ReviewProductWidget(),
               ],
             ),
           ),
-          Container(
-              margin: EdgeInsets.only(top: 16.0, bottom: 16.0),
-              padding: EdgeInsets.only(left: 16.0, right: 16.0),
-              decoration: BoxDecoration(
-                  color: AppColors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      blurRadius: 5,
-                      spreadRadius: 2,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              child: ProductDescriptionWidget(
-                  description:
-                      "A play on speed and style, the Urban Track takes the street head-on with no regrets. With its performance inspired aluminium frame and fork paired with comfortable riser handlebars, you can effortlessly navigate whatever life throws at you while looking your best. We love how it can fit any occasion.")),
-          ReviewProductWidget(),
-          ProductSlideWidget()
+          Consumer<ProductProvider>(
+            builder: (context, productProvider, child) {
+              if (productProvider.isLoading) {
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: AppColors.primary,
+                ));
+              } else {
+                return ProductSlideWidget(products: productProvider.products);
+              }
+            },
+          ),
         ],
       )),
       bottomNavigationBar: BottomAppBar(
@@ -224,8 +290,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   : MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (isOpenItemProduct)
-                  ItemCartWidget(products: widget.products),
+                if (isOpenItemProduct) ItemCartWidget(product: widget.item),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

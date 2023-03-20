@@ -97,7 +97,10 @@ class _ProductsPageState extends State<ProductsPage> {
           Consumer<ProductProvider>(
             builder: (context, productProvider, child) {
               if (productProvider.isLoading) {
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: AppColors.primary,
+                ));
               } else {
                 return ItemProductWidget(products: productProvider.products);
               }

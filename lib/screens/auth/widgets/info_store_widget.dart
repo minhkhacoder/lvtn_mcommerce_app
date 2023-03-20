@@ -3,9 +3,15 @@ import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/screens/auth/widgets/info_param_widget.dart';
 
-class InfoStoreWidget extends StatelessWidget {
-  const InfoStoreWidget({Key? key}) : super(key: key);
+class InfoStoreWidget extends StatefulWidget {
+  final Map<String, dynamic> seller;
+  const InfoStoreWidget({Key? key, required this.seller}) : super(key: key);
 
+  @override
+  _InfoStoreWidgetState createState() => _InfoStoreWidgetState();
+}
+
+class _InfoStoreWidgetState extends State<InfoStoreWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,7 +39,7 @@ class InfoStoreWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "storesport",
+                        widget.seller["seller_name"].toString(),
                         style: TextStyle(
                             fontSize: 24,
                             fontFamily: AppFontFamily.fontPrimary,
@@ -49,11 +55,15 @@ class InfoStoreWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Icon(
-                            Icons.location_on,
+                            Icons.check_circle,
                             color: AppColors.green,
+                            size: 18,
+                          ),
+                          SizedBox(
+                            width: 6,
                           ),
                           Text(
-                            "United States",
+                            "favorite",
                             style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: AppFontFamily.fontSecondary,
@@ -103,5 +113,6 @@ class InfoStoreWidget extends StatelessWidget {
         ],
       ),
     );
+    ;
   }
 }

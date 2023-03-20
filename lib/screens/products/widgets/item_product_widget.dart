@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/models/product_model.dart';
@@ -31,12 +33,13 @@ class ItemProductWidget extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => ProductDetailPage(products: item),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProductDetailPage(item: item.toJson()),
+                    ),
+                  );
                 },
                 child: Padding(
                   padding: EdgeInsets.zero,

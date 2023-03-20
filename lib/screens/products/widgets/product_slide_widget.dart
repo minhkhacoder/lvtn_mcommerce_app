@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
+import 'package:mcommerce_app/models/product_model.dart';
 import 'package:mcommerce_app/screens/products/product_detail_page.dart';
 import 'package:mcommerce_app/screens/products/widgets/image_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/price_product_widget.dart';
@@ -9,7 +10,9 @@ import 'package:mcommerce_app/widgets/stateless/heading_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/star_widget.dart';
 
 class ProductSlideWidget extends StatefulWidget {
-  const ProductSlideWidget({Key? key}) : super(key: key);
+  final List<Data> products;
+  const ProductSlideWidget({Key? key, required this.products})
+      : super(key: key);
 
   @override
   _ProductSlideWidgetState createState() => _ProductSlideWidgetState();
@@ -21,50 +24,6 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> products = [
-      {
-        "pro_id": "PRO01",
-        "pro_name": "6KU Track Fixed Gear Bicycle",
-        "pro_price": 249.99,
-        "pro_image":
-            "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg",
-        "children": [
-          {
-            "child":
-                "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg"
-          },
-          {
-            "child":
-                "https://m.media-amazon.com/images/I/71eThOOEvFL._AC_SX679_.jpg"
-          },
-          {
-            "child":
-                "https://m.media-amazon.com/images/I/71ClPNNV7DL._AC_SX679_.jpg"
-          }
-        ]
-      },
-      {
-        "pro_id": "PRO02",
-        "pro_name": "6KU Track Fixed Gear Bicycle",
-        "pro_price": 249.99,
-        "pro_image":
-            "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg"
-      },
-      {
-        "pro_id": "PRO03",
-        "pro_name": "6KU Track Fixed Gear Bicycle",
-        "pro_price": 249.99,
-        "pro_image":
-            "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg"
-      },
-      {
-        "pro_id": "PRO04",
-        "pro_name": "6KU Track Fixed Gear Bicycle",
-        "pro_price": 249.99,
-        "pro_image":
-            "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg"
-      },
-    ];
     return Container(
       margin: EdgeInsets.only(top: 16.0, bottom: 16.0),
       padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
@@ -82,24 +41,27 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
                     print(currentIndex);
                   },
                   child: CarouselSlider(
-                    items: products.map((item) {
+                    items: widget.products.map((item) {
+                      String url = item.image != null && item.image!.isNotEmpty
+                          ? item.image![0]
+                          : '';
                       return Container(
                         child: Column(
                           children: [
                             InkWell(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductDetailPage(products: item),
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         ProductDetailPage(products: item),
+                                //   ),
+                                // );
                               },
                               child: Padding(
                                 padding: EdgeInsets.zero,
                                 child: ImageProductWidget(
-                                  image_url: item["pro_image"],
+                                  image_url: url,
                                 ),
                               ),
                             ),
@@ -111,12 +73,13 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
                               padding: EdgeInsets.only(bottom: 8.0),
                               child: Container(
                                   child: TitleProductWidget(
-                                title: item["pro_name"],
+                                title: item.name.toString(),
                               )),
                             ),
                             Container(
                               child: PriceProductWidget(
-                                originalPrice: item["pro_price"],
+                                originalPrice:
+                                    double.parse(item.price.toString()),
                                 hasSale: false,
                               ),
                             )
