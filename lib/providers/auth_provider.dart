@@ -5,15 +5,16 @@ import 'package:mcommerce_app/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
-  late Data _user;
-  late String _accessToken;
-  late String _refreshToken;
+  Data? _user;
+  String? _accessToken;
+  String? _refreshToken;
   bool _isAuthenticated = false;
-
-  Data get user => _user;
-  String get accessToken => _accessToken;
-  String get refreshToken => _refreshToken;
+  bool _isSignup = false;
+  Data? get user => _user;
+  String? get accessToken => _accessToken;
+  String? get refreshToken => _refreshToken;
   bool get isAuthenticated => _isAuthenticated;
+  bool get isSignup => _isSignup;
 
   Future<void> login(String phone, String password) async {
     final authService = AuthService();
@@ -25,10 +26,22 @@ class AuthProvider with ChangeNotifier {
 
       // Save tokens and user data to local storage
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('accessToken', _accessToken);
-      await prefs.setString('refreshToken', _refreshToken);
-      await prefs.setString('userData', json.encode(_user.toJson()));
+      await prefs.setString('accessToken', _accessToken!);
+      await prefs.setString('refreshToken', _refreshToken!);
+      await prefs.setString('userData', json.encode(_user?.toJson()));
       _isAuthenticated = true;
+      notifyListeners();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> signup(String username, String phone, String password) async {
+    final authService = AuthService();
+    try {
+      String user = await authService.signup(username, phone, password);
+      print(user);
+      _isSignup = true;
       notifyListeners();
     } catch (e) {
       throw Exception(e);

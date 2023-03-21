@@ -41,6 +41,7 @@ class Data {
   String? cusEmail;
   String? cusGender;
   String? cusAddress;
+  String? cusAvatar;
 
   Data(
       {this.cusId,
@@ -49,7 +50,8 @@ class Data {
       this.cusUserName,
       this.cusEmail,
       this.cusGender,
-      this.cusAddress});
+      this.cusAddress,
+      this.cusAvatar});
 
   Data.fromJson(Map<String, dynamic> json) {
     cusId = json['cus_id'];
@@ -59,6 +61,7 @@ class Data {
     cusEmail = json['cus_email'];
     cusGender = json['cus_gender'];
     cusAddress = json['cus_address'];
+    cusAvatar = json['cus_avatar'];
   }
 
   Map<String, dynamic> toJson() {
@@ -70,6 +73,7 @@ class Data {
     data['cus_email'] = this.cusEmail;
     data['cus_gender'] = this.cusGender;
     data['cus_address'] = this.cusAddress;
+    data['cus_avatar'] = this.cusAvatar;
     return data;
   }
 }

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
+import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:mcommerce_app/screens/categories/category_page.dart';
 import 'package:mcommerce_app/screens/categories/widgets/app_bar_category_widget.dart';
 import 'package:mcommerce_app/screens/home/widgets/app_bar_home_widget.dart';
 import 'package:mcommerce_app/screens/home/widgets/home_body_widget.dart';
-import 'package:mcommerce_app/screens/search/search_page.dart';
-import 'package:mcommerce_app/screens/search/widgets/app_bar_search_widget.dart';
+import 'package:mcommerce_app/screens/profile/profile_page.dart';
+import 'package:mcommerce_app/screens/profile/widgets/app_bar_profile_widget.dart';
 
 import 'package:mcommerce_app/widgets/stateless/gradient_widget.dart';
+import 'package:provider/provider.dart';
 
 class LayoutWidget extends StatefulWidget {
   final Widget? body;
@@ -26,10 +29,17 @@ class LayoutWidget extends StatefulWidget {
   _LayoutWidgetState createState() => _LayoutWidgetState();
 }
 
-final List<Widget> _pages = [HomeBodyWidget(), CategoryPage()];
+final List<Widget> _pages = [
+  HomeBodyWidget(),
+  CategoryPage(),
+  CategoryPage(),
+  ProfilePage()
+];
 final List<Widget> _appBar = [
   AppBarHomeWidget(),
   AppBarCategoryWidget(),
+  AppBarCategoryWidget(),
+  AppBarProfileWidget()
 ];
 
 class _LayoutWidgetState extends State<LayoutWidget> {
@@ -44,6 +54,7 @@ class _LayoutWidgetState extends State<LayoutWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: AppColors.bg,
         appBar: PreferredSize(
             child: IndexedStack(
               index: _selectedIndex,
@@ -134,9 +145,15 @@ class _LayoutWidgetState extends State<LayoutWidget> {
                       ? GradientWidget(child: Icon(Icons.person_outline))
                       : Icon(Icons.person_outlined),
                   onPressed: () {
-                    setState(() {
-                      _selectedIndex = 3;
-                    });
+                    final authProvider =
+                        Provider.of<AuthProvider>(context, listen: false);
+                    if (authProvider.isAuthenticated == true) {
+                      setState(() {
+                        _selectedIndex = 3;
+                      });
+                    } else {
+                      Navigator.pushNamed(context, Routes.loginPage);
+                    }
                   },
                 ),
                 SizedBox(
