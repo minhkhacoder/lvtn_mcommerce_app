@@ -1,17 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
+import 'package:mcommerce_app/models/cart_model.dart';
+import 'package:mcommerce_app/providers/auth_provider.dart';
+import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/providers/product_provider.dart';
 import 'package:mcommerce_app/screens/auth/widgets/info_store_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/item_cart_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/price_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/product_description_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/product_slide_widget.dart';
-import 'package:mcommerce_app/screens/products/widgets/quantity_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/review_product_widget.dart';
-import 'package:mcommerce_app/screens/products/widgets/title_product_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/star_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +47,35 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     if (mounted) {
       // kiểm tra xem widget đã bị dispose hay chưa
       Provider.of<ProductProvider>(context, listen: false).fetchProducts();
+    }
+  }
+
+  int quantity = 1;
+  void handleQuantityChanged(int newQuantity) {
+    setState(() {
+      quantity = newQuantity;
+    });
+  }
+
+  void handleAddToCart() {
+    setState(() {
+      isOpenItemProduct = !isOpenItemProduct;
+    });
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (authProvider.isAuthenticated != true) {
+      Navigator.pushNamed(context, Routes.loginPage);
+    } else {
+      if (isOpenItemProduct == false) {
+        final cartProvider = Provider.of<CartProvider>(context, listen: false);
+        cartProvider.addToCart(Cart(
+          id: widget.item['id'],
+          name: widget.item['name'],
+          price: widget.item['price'],
+          image: widget.item['image'],
+          quantity: quantity,
+        ).toJson());
+        Navigator.pushNamed(context, Routes.cartPage);
+      }
     }
   }
 
@@ -190,8 +221,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       SizedBox(
                         height: 16.0,
                       ),
-                      // TitleProductWidget(
-                      //     title: widget.item["name"].toString(), fontSize: 18),
                       Text(
                         widget.item["name"].toString(),
                         style: TextStyle(
@@ -290,7 +319,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   : MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (isOpenItemProduct) ItemCartWidget(product: widget.item),
+                if (isOpenItemProduct)
+                  ItemCartWidget(
+                    product: widget.item,
+                    onQuantityChanged: handleQuantityChanged,
+                  ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -320,11 +353,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: TextButton(
-                        onPressed: (() {
-                          setState(() {
-                            isOpenItemProduct = true;
-                          });
-                        }),
+                        onPressed: handleAddToCart,
                         child: Text(
                           "Add to Cart",
                           style:

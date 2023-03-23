@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/screens/auth/login_page.dart';
 import 'package:mcommerce_app/screens/auth/signup_page.dart';
+import 'package:mcommerce_app/screens/cart/cart_page.dart';
 import 'package:mcommerce_app/screens/categories/category_page.dart';
 import 'package:mcommerce_app/screens/home/get_started_page.dart';
 import 'package:mcommerce_app/screens/home/home_page.dart';
@@ -34,7 +35,10 @@ class Routers {
         {
           return MaterialPageRoute(builder: (_) => LayoutWidget());
         }
-
+      case "CartPage":
+        {
+          return MaterialPageRoute(builder: (_) => CartPage());
+        }
       default:
         return _errorRoute();
     }

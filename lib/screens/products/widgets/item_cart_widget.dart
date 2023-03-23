@@ -2,19 +2,48 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/screens/products/widgets/price_product_widget.dart';
-import 'package:mcommerce_app/screens/products/widgets/quantity_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/title_product_widget.dart';
 
 class ItemCartWidget extends StatefulWidget {
   final Map<String, dynamic> product;
-  const ItemCartWidget({Key? key, required this.product}) : super(key: key);
+  final Function(int quantity)? onQuantityChanged;
+  const ItemCartWidget(
+      {Key? key, required this.product, this.onQuantityChanged})
+      : super(key: key);
 
   @override
   _ItemCartWidgetState createState() => _ItemCartWidgetState();
 }
 
 class _ItemCartWidgetState extends State<ItemCartWidget> {
+  late int _quantity;
   bool _isLoading = true;
+
+  void initState() {
+    super.initState();
+    if (widget.product['quantity'] != null) {
+      _quantity = widget.product['quantity'];
+    } else {
+      _quantity = 1;
+    }
+  }
+
+  void increment() {
+    setState(() {
+      _quantity++;
+    });
+    widget.onQuantityChanged!(_quantity);
+  }
+
+  void decrement() {
+    if (_quantity > 1) {
+      setState(() {
+        _quantity--;
+      });
+    }
+    widget.onQuantityChanged!(_quantity);
+  }
+
   @override
   Widget build(BuildContext context) {
     String url =
@@ -87,7 +116,29 @@ class _ItemCartWidgetState extends State<ItemCartWidget> {
             ),
           ),
           Container(
-            child: QuantityWidget(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.add_circle_outline,
+                    color: AppColors.darkGray,
+                  ),
+                  onPressed: increment,
+                ),
+                Text(
+                  '$_quantity',
+                  style: TextStyle(fontSize: 20, color: AppColors.darkGray),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.remove_circle_outline,
+                    color: AppColors.darkGray,
+                  ),
+                  onPressed: decrement,
+                ),
+              ],
+            ),
           )
         ],
       ),

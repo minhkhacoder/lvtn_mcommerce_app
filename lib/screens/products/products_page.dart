@@ -79,16 +79,16 @@ class _ProductsPageState extends State<ProductsPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               HeadingWidget(title: widget.title),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Sort by: ",
-                    style: TextStyle(color: AppColors.darkGray, fontSize: 16),
-                  )
-                ],
-              )
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   crossAxisAlignment: CrossAxisAlignment.center,
+              //   children: [
+              //     Text(
+              //       "Sort by: ",
+              //       style: TextStyle(color: AppColors.darkGray, fontSize: 16),
+              //     )
+              //   ],
+              // )
             ],
           ),
           SizedBox(

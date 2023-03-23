@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
+import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/screens/categories/category_page.dart';
 import 'package:mcommerce_app/screens/categories/widgets/app_bar_category_widget.dart';
 import 'package:mcommerce_app/screens/home/widgets/app_bar_home_widget.dart';
@@ -53,6 +54,8 @@ class _LayoutWidgetState extends State<LayoutWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
         backgroundColor: AppColors.bg,
         appBar: PreferredSize(
@@ -168,7 +171,7 @@ class _LayoutWidgetState extends State<LayoutWidget> {
             FloatingActionButton(
               backgroundColor: AppColors.primary,
               onPressed: () {
-                // mở trang giỏ hàng khi người dùng nhấn vào nút
+                Navigator.pushNamed(context, Routes.cartPage);
               },
               child: const Icon(
                 Icons.shopping_cart,
@@ -187,7 +190,9 @@ class _LayoutWidgetState extends State<LayoutWidget> {
                   minHeight: 16,
                 ),
                 child: Text(
-                  '0',
+                  authProvider.isAuthenticated
+                      ? cartProvider.carts.length.toString()
+                      : "0",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,
