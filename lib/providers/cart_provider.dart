@@ -52,4 +52,15 @@ class CartProvider with ChangeNotifier {
     }
     return totalPrice;
   }
+
+  Future<void> loadCart() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cart = prefs.getString('cart') ?? '[]';
+    List<dynamic> cartList = json.decode(cart);
+    List<Cart> newCart = cartList.map((item) {
+      return Cart.fromJson(item);
+    }).toList();
+    _carts = newCart;
+    notifyListeners();
+  }
 }

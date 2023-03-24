@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mcommerce_app/models/product_model.dart';
 import 'package:mcommerce_app/services/product_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductProvider with ChangeNotifier {
   List<Data> _products = [];

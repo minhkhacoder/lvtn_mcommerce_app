@@ -5,6 +5,7 @@ import 'package:mcommerce_app/screens/cart/cart_page.dart';
 import 'package:mcommerce_app/screens/categories/category_page.dart';
 import 'package:mcommerce_app/screens/home/get_started_page.dart';
 import 'package:mcommerce_app/screens/home/home_page.dart';
+import 'package:mcommerce_app/screens/orders/order_page.dart';
 import 'package:mcommerce_app/screens/products/product_detail_page.dart';
 import 'package:mcommerce_app/widgets/stateless/layout-widget.dart';
 
@@ -38,6 +39,10 @@ class Routers {
       case "CartPage":
         {
           return MaterialPageRoute(builder: (_) => CartPage());
+        }
+      case "OrderPage":
+        {
+          return MaterialPageRoute(builder: (_) => OrderPage());
         }
       default:
         return _errorRoute();

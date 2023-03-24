@@ -3,6 +3,8 @@ import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/providers/cart_provider.dart';
+import 'package:mcommerce_app/providers/delivery_provider.dart';
+import 'package:mcommerce_app/providers/payment_provider.dart';
 import 'package:mcommerce_app/screens/products/widgets/item_cart_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
 import 'package:provider/provider.dart';
@@ -163,31 +165,51 @@ class _CartPageState extends State<CartPage> {
           ),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Total price:",
-                    style: TextStyle(
-                        color: AppColors.dark,
-                        fontFamily: AppFontFamily.fontSecondary,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700),
-                  ),
-                  Text(
-                    formatter.format(cartProvider.totalPrice),
-                    style: TextStyle(
-                        color: AppColors.dark,
-                        fontFamily: AppFontFamily.fontSecondary,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700),
-                  )
-                ],
-              ),
+              cartProvider.carts.length > 0
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Total price:",
+                          style: TextStyle(
+                              color: AppColors.dark,
+                              fontFamily: AppFontFamily.fontSecondary,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        Text(
+                          formatter.format(cartProvider.totalPrice),
+                          style: TextStyle(
+                              color: AppColors.dark,
+                              fontFamily: AppFontFamily.fontSecondary,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700),
+                        )
+                      ],
+                    )
+                  : Container(),
               Container(
                   padding: const EdgeInsets.only(top: 16),
                   width: MediaQuery.of(context).size.width,
-                  child: ButtonWidget(label: "Check out", onPressed: () {}))
+                  child: ButtonWidget(
+                      label: cartProvider.carts.length > 0
+                          ? "Check out"
+                          : "Go to home",
+                      onPressed: () async {
+                        if (cartProvider.carts.length > 0) {
+                          final deliveryProvider =
+                              Provider.of<DeliveryProvider>(context,
+                                  listen: false);
+                          final paymentProvider = Provider.of<PaymentProvider>(
+                              context,
+                              listen: false);
+                          await deliveryProvider.fetchDeliveries();
+                          await paymentProvider.fetchPayments();
+                          Navigator.pushNamed(context, Routes.orderPage);
+                        } else {
+                          Navigator.pushNamed(context, Routes.homePage);
+                        }
+                      }))
             ],
           ),
         ),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
+import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/widgets/statefull/input_phone_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
 import 'package:mcommerce_app/widgets/statefull/input_pass_widget.dart';
@@ -74,9 +75,12 @@ class _LoginFormState extends State<LoginForm> {
                   }
                   final authProvider =
                       Provider.of<AuthProvider>(context, listen: false);
+                  final cartProvider =
+                      Provider.of<CartProvider>(context, listen: false);
                   try {
                     await authProvider.login(_phone, _password);
                     if (authProvider.isAuthenticated == true) {
+                      await cartProvider.loadCart();
                       final snackBar = SnackBar(
                         backgroundColor: Colors.transparent,
                         behavior: SnackBarBehavior.floating,

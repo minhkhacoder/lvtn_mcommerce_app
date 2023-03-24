@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
+import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/screens/home/widgets/slide_category_widget.dart';
 import 'package:mcommerce_app/screens/products/products_page.dart';
 import 'package:mcommerce_app/widgets/statefull/input_search.dart';
