@@ -25,7 +25,6 @@ class AuthService {
   }
 
   Future<String> signup(String username, String phone, String password) async {
-    print(username + " " + phone + " " + password);
     try {
       final response = await http.post(Uri.parse('${_baseUrl}/customer/signup'),
           body: {'username': username, 'phone': phone, 'password': password});

@@ -11,9 +11,10 @@ import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/providers/delivery_provider.dart';
 import 'package:mcommerce_app/providers/order_provider.dart';
 import 'package:mcommerce_app/providers/payment_provider.dart';
-
+import 'package:mcommerce_app/screens/orders/widgets/payment_card_modal.dart';
 import 'package:mcommerce_app/screens/orders/widgets/payment_modal.dart';
 import 'package:mcommerce_app/screens/orders/widgets/success_modal.dart';
+import 'package:mcommerce_app/utils/make_payment.dart';
 import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -48,6 +49,7 @@ class _OrderPageState extends State<OrderPage> {
     // print(payment?.payName);
     final paymentProvider =
         Provider.of<PaymentProvider>(context, listen: false);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final result = await showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -59,6 +61,10 @@ class _OrderPageState extends State<OrderPage> {
         payment = Provider.of<PaymentProvider>(context, listen: false)
             .getPaymentAtIndex(result);
       });
+    }
+    if (result == 1) {
+      PaymentStripe().makePayment(
+          (cartProvider.totalPrice + (_delivery ?? 18.00)).round().toString());
     }
   }
 
@@ -76,7 +82,7 @@ class _OrderPageState extends State<OrderPage> {
     final result = await showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container();
+        return PaymentCardModal();
       },
     );
     // if (result == null) Navigator.pushNamed(context, Routes.homePage);
