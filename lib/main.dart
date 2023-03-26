@@ -5,6 +5,7 @@ import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/providers/delivery_provider.dart';
+import 'package:mcommerce_app/providers/order_provider.dart';
 import 'package:mcommerce_app/providers/payment_provider.dart';
 import 'package:mcommerce_app/providers/product_provider.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => DeliveryProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

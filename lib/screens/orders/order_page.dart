@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
-import 'package:mcommerce_app/models/payment.dart';
+import 'package:mcommerce_app/models/cart_model.dart';
+import 'package:mcommerce_app/models/order_model.dart';
+import 'package:mcommerce_app/models/payment_model.dart';
+import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/providers/delivery_provider.dart';
+import 'package:mcommerce_app/providers/order_provider.dart';
 import 'package:mcommerce_app/providers/payment_provider.dart';
-import 'package:mcommerce_app/screens/orders/widgets/payment_model.dart';
+
+import 'package:mcommerce_app/screens/orders/widgets/payment_modal.dart';
+import 'package:mcommerce_app/screens/orders/widgets/success_modal.dart';
 import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +29,9 @@ class _OrderPageState extends State<OrderPage> {
   bool _isLoading = true;
   var _delivery;
   var _isDelivery = 0;
+  String shipId = "SHIP01";
+  String orderAddress =
+      "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA";
   int index = 0;
   Data? payment;
   @override
@@ -53,13 +62,56 @@ class _OrderPageState extends State<OrderPage> {
     }
   }
 
+  void _showSuccessModal(BuildContext context) async {
+    final result = await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SuccessModal();
+      },
+    );
+    if (result == null) Navigator.pushNamed(context, Routes.homePage);
+  }
+
+  void _showCardFormPaymentModal(BuildContext context) async {
+    final result = await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container();
+      },
+    );
+    // if (result == null) Navigator.pushNamed(context, Routes.homePage);
+  }
+
+  void handleCreateOrder() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+    List<Cart> carts = cartProvider.carts;
+    for (int i = 0; i < carts.length; i++) {
+      int? quantity = carts[i].quantity;
+      double? price = double.parse(carts[i].price!);
+      OrderDetail orderDetail = OrderDetail(
+          proId: carts[i].id,
+          ordtPrice: quantity! * price,
+          ordtQuantity: quantity);
+      orderProvider.addOrderDetail(orderDetail);
+    }
+    String accId = authProvider.user?.accId ?? '';
+    String payId = payment?.payId ?? '';
+    bool result =
+        await orderProvider.createOrder(accId, shipId, payId, orderAddress);
+    if (result == true) {
+      cartProvider.resetCarts();
+      _showSuccessModal(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(payment?.payName);
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final deliveryProvider =
         Provider.of<DeliveryProvider>(context, listen: false);
-
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final stringAvatarPay = payment?.payAvatar;
     final stringNamePay = payment?.payName;
 
@@ -170,7 +222,7 @@ class _OrderPageState extends State<OrderPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Oleh Chabanov",
+                          authProvider.user?.cusUserName ?? "",
                           style: TextStyle(
                               color: AppColors.dark,
                               fontFamily: AppFontFamily.fontSecondary,
@@ -180,6 +232,7 @@ class _OrderPageState extends State<OrderPage> {
                         OutlinedButton(
                           onPressed: () {
                             // Xử lý khi người dùng bấm nút
+                            _showCardFormPaymentModal(context);
                           },
                           style: ButtonStyle(
                             side: MaterialStateProperty.all<BorderSide>(
@@ -209,7 +262,7 @@ class _OrderPageState extends State<OrderPage> {
                       ],
                     ),
                     Text(
-                      "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA",
+                      orderAddress,
                       style: TextStyle(
                         color: AppColors.darkGray,
                         fontSize: 14,
@@ -270,6 +323,7 @@ class _OrderPageState extends State<OrderPage> {
                       setState(() {
                         _delivery = ship.shipFee;
                         _isDelivery = index;
+                        shipId = ship.shipId!;
                       });
                     },
                     child: Container(
@@ -609,7 +663,8 @@ class _OrderPageState extends State<OrderPage> {
               Container(
                   padding: const EdgeInsets.only(top: 16),
                   width: MediaQuery.of(context).size.width,
-                  child: ButtonWidget(label: "Payment", onPressed: () {}))
+                  child: ButtonWidget(
+                      label: "Payment", onPressed: handleCreateOrder))
             ],
           ),
         ),

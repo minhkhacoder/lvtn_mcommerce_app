@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mcommerce_app/models/payment.dart';
+import 'package:mcommerce_app/models/payment_model.dart';
 import 'package:mcommerce_app/services/payment_service.dart';
 
 class PaymentProvider with ChangeNotifier {

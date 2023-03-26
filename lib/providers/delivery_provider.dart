@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mcommerce_app/models/delivery.dart';
+import 'package:mcommerce_app/models/delivery_model.dart';
 import 'package:mcommerce_app/services/delivery_service.dart';
 
 class DeliveryProvider with ChangeNotifier {

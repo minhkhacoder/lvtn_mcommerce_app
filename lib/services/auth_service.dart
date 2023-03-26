@@ -15,7 +15,6 @@ class AuthService {
       if (response.statusCode == 200) {
         final jsonBody = json.decode(response.body);
         final user = User.fromJson(jsonBody);
-        // print(user.accessToken);
         return user;
       } else {
         throw Exception('Failed to login');

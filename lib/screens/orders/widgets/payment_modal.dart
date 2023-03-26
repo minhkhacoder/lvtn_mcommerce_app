@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
-import 'package:mcommerce_app/models/payment.dart';
+import 'package:mcommerce_app/models/payment_model.dart';
 
 class PaymentModal extends StatefulWidget {
   final List<Data> paymentList;

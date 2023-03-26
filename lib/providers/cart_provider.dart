@@ -12,7 +12,11 @@ class CartProvider with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String cart = prefs.getString('cart') ?? '[]';
 
-    List<dynamic> cartList = json.decode(cart);
+    List<dynamic> cartList = [];
+
+    if (json.decode(cart) is List) {
+      cartList = json.decode(cart);
+    }
 
     List<Cart> newCart = cartList.map((item) {
       return Cart.fromJson(item);
@@ -40,6 +44,7 @@ class CartProvider with ChangeNotifier {
     }
     prefs.setString('cart', json.encode(newCart));
     _carts = newCart;
+
     notifyListeners();
   }
 
@@ -53,10 +58,22 @@ class CartProvider with ChangeNotifier {
     return totalPrice;
   }
 
+  void resetCarts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('cart', json.encode({}));
+    _carts.clear();
+    notifyListeners();
+  }
+
   Future<void> loadCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String cart = prefs.getString('cart') ?? '[]';
-    List<dynamic> cartList = json.decode(cart);
+    List<dynamic> cartList = [];
+
+    if (json.decode(cart) is List) {
+      cartList = json.decode(cart);
+    }
+
     List<Cart> newCart = cartList.map((item) {
       return Cart.fromJson(item);
     }).toList();
