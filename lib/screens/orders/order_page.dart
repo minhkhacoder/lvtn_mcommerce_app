@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
@@ -31,6 +32,7 @@ class _OrderPageState extends State<OrderPage> {
   var _delivery;
   var _isDelivery = 0;
   String shipId = "SHIP01";
+  String payId = "";
   String orderAddress =
       "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA";
   int index = 0;
@@ -42,29 +44,6 @@ class _OrderPageState extends State<OrderPage> {
       // kiểm tra xem widget đã bị dispose hay chưa
       payment = Provider.of<PaymentProvider>(context, listen: false)
           .getPaymentAtIndex(index);
-    }
-  }
-
-  void _showPaymentModal(BuildContext context) async {
-    // print(payment?.payName);
-    final paymentProvider =
-        Provider.of<PaymentProvider>(context, listen: false);
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    final result = await showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return PaymentModal(paymentList: paymentProvider.payments);
-      },
-    );
-    if (result != null) {
-      setState(() {
-        payment = Provider.of<PaymentProvider>(context, listen: false)
-            .getPaymentAtIndex(result);
-      });
-    }
-    if (result == 1) {
-      PaymentStripe().makePayment(
-          (cartProvider.totalPrice + (_delivery ?? 18.00)).round().toString());
     }
   }
 
@@ -85,7 +64,7 @@ class _OrderPageState extends State<OrderPage> {
         return PaymentCardModal();
       },
     );
-    // if (result == null) Navigator.pushNamed(context, Routes.homePage);
+    if (result == null) Navigator.pushNamed(context, Routes.homePage);
   }
 
   void handleCreateOrder() async {
@@ -103,12 +82,54 @@ class _OrderPageState extends State<OrderPage> {
       orderProvider.addOrderDetail(orderDetail);
     }
     String accId = authProvider.user?.accId ?? '';
-    String payId = payment?.payId ?? '';
-    bool result =
-        await orderProvider.createOrder(accId, shipId, payId, orderAddress);
-    if (result == true) {
-      cartProvider.resetCarts();
-      _showSuccessModal(context);
+    if (payId.isNotEmpty) {
+      bool result =
+          await orderProvider.createOrder(accId, shipId, payId, orderAddress);
+      if (result == true) {
+        cartProvider.resetCarts();
+        _showSuccessModal(context);
+      }
+    }
+  }
+
+  void displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      handleCreateOrder();
+    } on Exception catch (e) {
+      if (e is StripeException) {
+        print("Error from stripe $e");
+      } else {
+        print("Unforeseen error $e");
+      }
+    } catch (e) {
+      print("Exception ==== $e");
+    }
+  }
+
+  void _showPaymentModal(BuildContext context) async {
+    // print(payment?.payName);
+    final paymentProvider =
+        Provider.of<PaymentProvider>(context, listen: false);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final result = await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return PaymentModal(paymentList: paymentProvider.payments);
+      },
+    );
+    if (result != null) {
+      setState(() {
+        payment = Provider.of<PaymentProvider>(context, listen: false)
+            .getPaymentAtIndex(result);
+        payId = payment?.payId ?? '';
+        // print(payment?.payId);
+      });
+    }
+    if (result == 1) {
+      PaymentStripe().makePayment(
+          (cartProvider.totalPrice + (_delivery ?? 18.00)).ceil().toString(),
+          displayPaymentSheet);
     }
   }
 
@@ -134,7 +155,7 @@ class _OrderPageState extends State<OrderPage> {
             elevation: 0,
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, Routes.layoutPage);
+                  Navigator.pushNamed(context, Routes.cartPage);
                 },
                 icon: Icon(
                   Icons.arrow_back,

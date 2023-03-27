@@ -1,27 +1,32 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 class PaymentStripe {
   Map<String, dynamic>? paymentIntentData;
 
-  Future<void> makePayment(String account) async {
+  Future<void> makePayment(
+      String account, void Function() displayPaymentSheet) async {
     try {
       paymentIntentData = await createPaymentIntent(account);
       if (paymentIntentData != null) {
         await Stripe.instance.initPaymentSheet(
-            paymentSheetParameters: SetupPaymentSheetParameters(
-                // applePay: true,
-                googlePay: PaymentSheetGooglePay(merchantCountryCode: "US"),
-                merchantDisplayName: "Kha",
-                customerId: paymentIntentData!['customer'],
-                paymentIntentClientSecret: paymentIntentData!['client_secret'],
-                customerEphemeralKeySecret:
-                    paymentIntentData!['ephemeralkey']));
+          paymentSheetParameters: SetupPaymentSheetParameters(
+              // applePay: true,
+              googlePay: PaymentSheetGooglePay(merchantCountryCode: "US"),
+              merchantDisplayName: "Kha",
+              style: ThemeMode.dark,
+              customerId: paymentIntentData!['customer'],
+              paymentIntentClientSecret: paymentIntentData!['client_secret'],
+              customerEphemeralKeySecret: paymentIntentData!['ephemeralkey']),
+        );
         displayPaymentSheet();
       }
+    } on StripeException catch (e) {
+      print("Error from stripe $e");
     } catch (e) {
-      print("Exception make payment " + e.toString());
+      print("Exception ==== $e");
     }
   }
 
@@ -50,19 +55,5 @@ class PaymentStripe {
   calculateAmount(String amount) {
     final a = (int.parse(amount)) * 100;
     return a.toString();
-  }
-
-  void displayPaymentSheet() async {
-    try {
-      await Stripe.instance.presentPaymentSheet();
-    } on Exception catch (e) {
-      if (e is StripeException) {
-        print("Error from stripe $e");
-      } else {
-        print("Unforeseen error $e");
-      }
-    } catch (e) {
-      print("Exception ==== $e");
-    }
   }
 }
