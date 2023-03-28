@@ -80,4 +80,51 @@ class CartProvider with ChangeNotifier {
     _carts = newCart;
     notifyListeners();
   }
+
+  void updateCartItem(String id, int quantity) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cart = prefs.getString('cart') ?? '[]';
+
+    List<dynamic> cartList = [];
+
+    if (json.decode(cart) is List) {
+      cartList = json.decode(cart);
+    }
+
+    List<Cart> newCart = cartList.map((item) {
+      return Cart.fromJson(item);
+    }).toList();
+    for (int i = 0; i < newCart.length; i++) {
+      if (newCart[i].id == id) {
+        newCart[i].quantity = quantity;
+        break;
+      }
+    }
+
+    prefs.setString('cart', json.encode(newCart));
+    _carts = newCart;
+
+    notifyListeners();
+  }
+
+  void deleteCartItem(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cart = prefs.getString('cart') ?? '[]';
+
+    List<dynamic> cartList = [];
+
+    if (json.decode(cart) is List) {
+      cartList = json.decode(cart);
+    }
+
+    List<Cart> newCart = cartList.map((item) {
+      return Cart.fromJson(item);
+    }).toList();
+    newCart.removeWhere((item) => item.id == id);
+
+    prefs.setString('cart', json.encode(newCart));
+    _carts = newCart;
+
+    notifyListeners();
+  }
 }

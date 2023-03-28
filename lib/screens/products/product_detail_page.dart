@@ -51,9 +51,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   int quantity = 1;
-  void handleQuantityChanged(int newQuantity) {
+  String id = "";
+  void handleQuantityChanged(int newQuantity, String newId) {
     setState(() {
       quantity = newQuantity;
+      id = newId;
     });
   }
 

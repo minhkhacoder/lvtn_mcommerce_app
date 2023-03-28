@@ -6,7 +6,7 @@ import 'package:mcommerce_app/screens/products/widgets/title_product_widget.dart
 
 class ItemCartWidget extends StatefulWidget {
   final Map<String, dynamic> product;
-  final Function(int quantity)? onQuantityChanged;
+  final Function(int quantity, String id)? onQuantityChanged;
   const ItemCartWidget(
       {Key? key, required this.product, this.onQuantityChanged})
       : super(key: key);
@@ -26,13 +26,14 @@ class _ItemCartWidgetState extends State<ItemCartWidget> {
     } else {
       _quantity = 1;
     }
+    // widget.onQuantityChanged!(_quantity);
   }
 
   void increment() {
     setState(() {
       _quantity++;
     });
-    widget.onQuantityChanged!(_quantity);
+    widget.onQuantityChanged!(_quantity, widget.product['id']);
   }
 
   void decrement() {
@@ -41,7 +42,7 @@ class _ItemCartWidgetState extends State<ItemCartWidget> {
         _quantity--;
       });
     }
-    widget.onQuantityChanged!(_quantity);
+    widget.onQuantityChanged!(_quantity, widget.product['id']);
   }
 
   @override

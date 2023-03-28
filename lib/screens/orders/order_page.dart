@@ -128,7 +128,7 @@ class _OrderPageState extends State<OrderPage> {
     }
     if (result == 1) {
       PaymentStripe().makePayment(
-          (cartProvider.totalPrice + (_delivery ?? 18.00)).ceil().toString(),
+          (cartProvider.totalPrice + (_delivery ?? 18.00)).toString(),
           displayPaymentSheet);
     }
   }

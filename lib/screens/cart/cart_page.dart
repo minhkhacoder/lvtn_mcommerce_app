@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
+import 'package:mcommerce_app/models/cart_model.dart';
 import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/providers/delivery_provider.dart';
 import 'package:mcommerce_app/providers/payment_provider.dart';
@@ -18,6 +19,27 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  late List<Cart> carts;
+  bool isDelete = false;
+  int quantity = 1;
+  String id = "";
+
+  @override
+  void initState() {
+    super.initState();
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    carts = cartProvider.carts;
+  }
+
+  void handleQuantityChanged(int newQuantity, String newId) {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    setState(() {
+      quantity = newQuantity;
+      id = newId;
+      cartProvider.updateCartItem(id, quantity);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
@@ -80,7 +102,7 @@ class _CartPageState extends State<CartPage> {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
         child: ListView(children: [
-          cartProvider.carts.length > 0
+          carts.length > 0
               ? GridView.count(
                   crossAxisCount: 1,
                   childAspectRatio: 3,
@@ -88,15 +110,53 @@ class _CartPageState extends State<CartPage> {
                   mainAxisSpacing: 16.0,
                   // crossAxisSpacing: 16.0,
                   physics: NeverScrollableScrollPhysics(),
-                  children: cartProvider.carts.map(((cart) {
-                    return ItemCartWidget(
-                      product: {
-                        'id': cart.id,
-                        'name': cart.name,
-                        'price': cart.price,
-                        'image': cart.image,
-                        'quantity': cart.quantity
-                      },
+                  children: carts.map(((cart) {
+                    return Container(
+                      child: ListView(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ItemCartWidget(
+                                product: {
+                                  'id': cart.id,
+                                  'name': cart.name,
+                                  'price': cart.price,
+                                  'image': cart.image,
+                                  'quantity': cart.quantity
+                                },
+                                onQuantityChanged: handleQuantityChanged,
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12.0, vertical: 4.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    cartProvider
+                                        .deleteCartItem(cart.id.toString());
+
+                                    // setState(() {
+                                    //   carts = cartProvider.carts;
+                                    // });
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              CartPage()),
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: AppColors.red,
+                                    size: 24,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                   })).toList(),
                 )

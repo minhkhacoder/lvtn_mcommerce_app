@@ -53,7 +53,8 @@ class PaymentStripe {
   }
 
   calculateAmount(String amount) {
-    final a = (int.parse(amount)) * 100;
-    return a.toString();
+    print(amount);
+    final a = double.parse(amount) * 100;
+    return a.round().toString();
   }
 }
