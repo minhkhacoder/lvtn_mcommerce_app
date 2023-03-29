@@ -50,7 +50,10 @@ class ItemProductWidget extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: StarWidget(),
+                child: StarWidget(
+                  count: item.averageRating,
+                  point: item.ratCount,
+                ),
               ),
               Container(
                 padding: EdgeInsets.only(bottom: 8.0),

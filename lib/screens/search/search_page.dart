@@ -25,7 +25,7 @@ class _SearchPageState extends State<SearchPage> {
         child: SingleChildScrollView(
           child: Column(children: [
             ProductsPage(
-              title: '4 items',
+              title: 'Results: 4 items',
             )
           ]),
         ),

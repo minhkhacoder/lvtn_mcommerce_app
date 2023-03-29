@@ -206,7 +206,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          StarWidget(),
+                          StarWidget(
+                            count: 5,
+                            point: 5,
+                          ),
                           SizedBox(
                             width: 10.0,
                           ),

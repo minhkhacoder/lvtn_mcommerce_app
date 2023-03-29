@@ -57,7 +57,10 @@ class ReviewProductWidget extends StatelessWidget {
                     SizedBox(
                       height: 6.0,
                     ),
-                    StarWidget()
+                    StarWidget(
+                      count: 5,
+                      point: 5,
+                    )
                   ],
                 ),
                 Text(

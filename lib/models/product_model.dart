@@ -40,7 +40,7 @@ class Data {
   Producer? producer;
   Seller? seller;
   int? ratCount;
-  String? averageRating;
+  int? averageRating;
   List<String>? image;
 
   Data(

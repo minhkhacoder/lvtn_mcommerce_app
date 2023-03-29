@@ -67,7 +67,10 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 8.0),
-                              child: StarWidget(),
+                              child: StarWidget(
+                                count: 5,
+                                point: 5,
+                              ),
                             ),
                             Container(
                               padding: EdgeInsets.only(bottom: 8.0),
