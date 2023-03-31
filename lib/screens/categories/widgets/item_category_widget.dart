@@ -3,7 +3,8 @@ import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/models/category_model.dart';
 import 'package:mcommerce_app/providers/category_provider.dart';
-import 'package:mcommerce_app/screens/search/search_page.dart';
+import 'package:mcommerce_app/providers/search_provider.dart';
+import 'package:mcommerce_app/screens/search/search_category_page.dart';
 import 'package:mcommerce_app/utils/bottom_sheet_utils.dart'
     as bottomSheetUtils;
 import 'package:provider/provider.dart';
@@ -118,13 +119,20 @@ class _ItemCategoryWidgetState extends State<ItemCategoryWidget> {
                                     children: categoryProvider.categories
                                         .map((child) {
                                       return TextButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    SearchPage(),
+                                                    SearchCategoryPage(
+                                                  keyName:
+                                                      child.catName.toString(),
+                                                ),
                                               ));
+                                          Provider.of<SearchProvider>(context,
+                                                  listen: false)
+                                              .searchAllProductByCategory(
+                                                  child.catId.toString());
                                         },
                                         child: Text(
                                           child.catName.toString(),

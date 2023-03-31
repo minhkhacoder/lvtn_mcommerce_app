@@ -8,4 +8,5 @@ class Routes {
   static const String productDetailPage = "ProductDetailPage";
   static const String cartPage = "CartPage";
   static const String orderPage = "OrderPage";
+  static const String filterPage = "FilterPage";
 }

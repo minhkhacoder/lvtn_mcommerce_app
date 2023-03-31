@@ -15,50 +15,6 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  // final List<Map<String, dynamic>> products = [
-  //   {
-  //     "pro_id": "PRO01",
-  //     "pro_name": "6KU Track Fixed Gear Bicycle",
-  //     "pro_price": 249.99,
-  //     "pro_image":
-  //         "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg",
-  //     "children": [
-  //       {
-  //         "child":
-  //             "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg"
-  //       },
-  //       {
-  //         "child":
-  //             "https://m.media-amazon.com/images/I/71eThOOEvFL._AC_SX679_.jpg"
-  //       },
-  //       {
-  //         "child":
-  //             "https://m.media-amazon.com/images/I/71ClPNNV7DL._AC_SX679_.jpg"
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     "pro_id": "PRO02",
-  //     "pro_name": "6KU Track Fixed Gear Bicycle",
-  //     "pro_price": 249.99,
-  //     "pro_image":
-  //         "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg"
-  //   },
-  //   {
-  //     "pro_id": "PRO03",
-  //     "pro_name": "6KU Track Fixed Gear Bicycle",
-  //     "pro_price": 249.99,
-  //     "pro_image":
-  //         "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg"
-  //   },
-  //   {
-  //     "pro_id": "PRO04",
-  //     "pro_name": "6KU Track Fixed Gear Bicycle",
-  //     "pro_price": 249.99,
-  //     "pro_image":
-  //         "https://m.media-amazon.com/images/I/71zYYN1n5jL._AC_SL1500_.jpg"
-  //   },
-  // ]
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

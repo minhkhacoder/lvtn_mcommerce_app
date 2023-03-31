@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
-import 'package:mcommerce_app/widgets/statefull/input_search.dart';
 
-class AppBarSearchWidget extends StatelessWidget {
-  final String title;
-  const AppBarSearchWidget({Key? key, required this.title}) : super(key: key);
+class AppBarFilterWidget extends StatefulWidget {
+  const AppBarFilterWidget({Key? key}) : super(key: key);
 
+  @override
+  _AppBarFilterWidgetState createState() => _AppBarFilterWidgetState();
+}
+
+class _AppBarFilterWidgetState extends State<AppBarFilterWidget> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -16,7 +18,7 @@ class AppBarSearchWidget extends StatelessWidget {
       elevation: 0,
       leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, Routes.layoutPage);
+            Navigator.pop(context);
           },
           icon: Icon(
             Icons.arrow_back,
@@ -26,7 +28,7 @@ class AppBarSearchWidget extends StatelessWidget {
       title: Row(
         children: [
           Text(
-            title,
+            "Filter",
             style: TextStyle(
                 color: AppColors.white,
                 fontFamily: AppFontFamily.fontThird,
@@ -51,23 +53,13 @@ class AppBarSearchWidget extends StatelessWidget {
       ),
       actions: [
         IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.filterPage);
-            },
+            onPressed: () {},
             icon: Icon(
               Icons.filter_alt,
-              color: Colors.white,
+              color: Colors.transparent,
               size: 24,
             )),
       ],
-      bottom: PreferredSize(
-          preferredSize: Size.fromHeight(44.0),
-          child: Container(
-            padding: EdgeInsets.only(bottom: 10),
-            child: InputSearch(
-              hintsText: "What are you looking for?",
-            ),
-          )),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:mcommerce_app/screens/home/get_started_page.dart';
 import 'package:mcommerce_app/screens/home/home_page.dart';
 import 'package:mcommerce_app/screens/orders/order_page.dart';
 import 'package:mcommerce_app/screens/products/product_detail_page.dart';
+import 'package:mcommerce_app/screens/search/filter_page.dart';
 import 'package:mcommerce_app/widgets/stateless/layout-widget.dart';
 
 class Routers {
@@ -43,6 +44,10 @@ class Routers {
       case "OrderPage":
         {
           return MaterialPageRoute(builder: (_) => OrderPage());
+        }
+      case "FilterPage":
+        {
+          return MaterialPageRoute(builder: (_) => FilterPage());
         }
       default:
         return _errorRoute();
