@@ -17,7 +17,7 @@ class ItemCategoryWidget extends StatefulWidget {
 }
 
 class _ItemCategoryWidgetState extends State<ItemCategoryWidget> {
-  List<Category> cate = [];
+  List<Childrens> cate = [];
   @override
   Widget build(BuildContext context) {
     List categories = [
@@ -116,8 +116,8 @@ class _ItemCategoryWidgetState extends State<ItemCategoryWidget> {
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    children: categoryProvider.categories
-                                        .map((child) {
+                                    children:
+                                        categoryProvider.childrens.map((child) {
                                       return TextButton(
                                         onPressed: () async {
                                           Navigator.push(
@@ -126,16 +126,16 @@ class _ItemCategoryWidgetState extends State<ItemCategoryWidget> {
                                                 builder: (context) =>
                                                     SearchCategoryPage(
                                                   keyName:
-                                                      child.catName.toString(),
+                                                      child.label.toString(),
                                                 ),
                                               ));
                                           Provider.of<SearchProvider>(context,
                                                   listen: false)
                                               .searchAllProductByCategory(
-                                                  child.catId.toString());
+                                                  child.id.toString());
                                         },
                                         child: Text(
-                                          child.catName.toString(),
+                                          child.label.toString(),
                                           style: TextStyle(
                                               color: AppColors.darkGray,
                                               fontFamily:

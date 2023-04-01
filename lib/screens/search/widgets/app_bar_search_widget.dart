@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
+import 'package:mcommerce_app/providers/brand_provider.dart';
+import 'package:mcommerce_app/providers/category_provider.dart';
 import 'package:mcommerce_app/widgets/statefull/input_search.dart';
+import 'package:provider/provider.dart';
 
 class AppBarSearchWidget extends StatelessWidget {
   final String title;
@@ -53,6 +56,11 @@ class AppBarSearchWidget extends StatelessWidget {
         IconButton(
             onPressed: () {
               Navigator.pushNamed(context, Routes.filterPage);
+              final brandProvider =
+                  Provider.of<BrandProvider>(context, listen: false);
+              brandProvider.fetchAllBrands();
+              Provider.of<CategoryProvider>(context, listen: false)
+                  .fetchAllCategories();
             },
             icon: Icon(
               Icons.filter_alt,
