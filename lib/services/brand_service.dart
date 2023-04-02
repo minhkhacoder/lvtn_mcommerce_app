@@ -7,15 +7,15 @@ import 'package:mcommerce_app/models/brand_model.dart';
 class BrandService {
   static final String _baseUrl = dotenv.env['BASEURL']!;
 
-  static Future<List<Data>> fetchAllBrands() async {
+  static Future<List<DataBrand>> fetchAllBrands() async {
     try {
       final response = await http.get(
         Uri.parse('$_baseUrl/brand/all'),
       );
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body)['data'];
-        final List<Data> brands =
-            jsonData.map((data) => Data.fromJson(data)).toList();
+        final List<DataBrand> brands =
+            jsonData.map((data) => DataBrand.fromJson(data)).toList();
 
         return brands;
       } else {

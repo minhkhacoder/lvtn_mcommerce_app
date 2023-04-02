@@ -1,15 +1,15 @@
 class Brand {
   bool? success;
-  List<Data>? data;
+  List<DataBrand>? data;
 
   Brand({this.success, this.data});
 
   Brand.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DataBrand>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new DataBrand.fromJson(v));
       });
     }
   }
@@ -24,13 +24,13 @@ class Brand {
   }
 }
 
-class Data {
+class DataBrand {
   String? id;
   String? label;
 
-  Data({this.id, this.label});
+  DataBrand({this.id, this.label});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataBrand.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     label = json['label'];
   }

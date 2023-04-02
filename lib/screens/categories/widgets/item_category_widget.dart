@@ -125,8 +125,7 @@ class _ItemCategoryWidgetState extends State<ItemCategoryWidget> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     SearchCategoryPage(
-                                                  keyName:
-                                                      child.label.toString(),
+                                                  child: child,
                                                 ),
                                               ));
                                           Provider.of<SearchProvider>(context,

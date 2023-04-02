@@ -36,7 +36,7 @@ class Data {
   String? material;
   String? price;
   Category? category;
-  Brand? brand;
+  DataBrand? brand;
   Producer? producer;
   Seller? seller;
   int? ratCount;
@@ -66,7 +66,8 @@ class Data {
     category = json['category'] != null
         ? new Category.fromJson(json['category'])
         : null;
-    brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
+    brand =
+        json['brand'] != null ? new DataBrand.fromJson(json['brand']) : null;
     producer = json['producer'] != null
         ? new Producer.fromJson(json['producer'])
         : null;

@@ -1,29 +1,35 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
+import 'package:mcommerce_app/providers/search_provider.dart';
+import 'package:provider/provider.dart';
+
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/providers/brand_provider.dart';
 import 'package:mcommerce_app/providers/category_provider.dart';
 import 'package:mcommerce_app/screens/search/widgets/app_bar_filter_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
-import 'package:provider/provider.dart';
 
 class FilterPage extends StatefulWidget {
+  final List<String>? selectedCategories;
+  FilterPage({
+    Key? key,
+    this.selectedCategories,
+  }) : super(key: key);
   @override
   _FilterPageState createState() => _FilterPageState();
 }
 
 class _FilterPageState extends State<FilterPage> {
-  final List<String> sortby = [
-    'Low to High',
-    'High to Low',
-    'Popularity',
-    'New',
+  final List<Map<String, dynamic>> sortby = [
+    {"id": "lth", "label": "Low to High"},
+    {"id": "htl", "label": "High to Low"},
+    {"id": "popularity", "label": "Popularity"},
+    {"id": "new", "label": "New"},
   ];
 
-  List<String> selectedCategories = [];
-  List<String> selectedBrands = [];
+  List<String> _selectedCategories = [];
+  List<String> _selectedBrands = [];
   List<String> selectedSortBy = [];
 
   double selectedPrice = 0;
@@ -32,6 +38,17 @@ class _FilterPageState extends State<FilterPage> {
   double selectedRating = 0;
 
   bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      final searchProvider =
+          Provider.of<SearchProvider>(context, listen: false);
+      _selectedCategories = widget.selectedCategories!;
+      _selectedBrands = searchProvider.brands;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +131,7 @@ class _FilterPageState extends State<FilterPage> {
             ),
             Consumer<CategoryProvider>(
                 builder: (context, categoryProvider, child) {
-              final categories = categoryProvider.categoriesNames;
+              final categories = categoryProvider.childrens;
               return Container(
                 decoration: BoxDecoration(
                   color: AppColors.white,
@@ -129,20 +146,20 @@ class _FilterPageState extends State<FilterPage> {
                         fontFamily: AppFontFamily.fontSecondary,
                         fontSize: 14,
                         letterSpacing: -0.15),
-                    value: selectedCategories.isNotEmpty
-                        ? selectedCategories[0]
+                    value: _selectedCategories.isNotEmpty
+                        ? _selectedCategories[0]
                         : null,
                     onChanged: (newValue) {
+                      print(newValue);
                       setState(() {
-                        selectedCategories.clear();
-                        selectedCategories.add(newValue!);
+                        _selectedCategories.clear();
+                        _selectedCategories.add(newValue!);
                       });
                     },
-                    items: categories
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: categories.map<DropdownMenuItem<String>>((category) {
                       return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
+                        value: category.id,
+                        child: Text(category.label.toString()),
                       );
                     }).toList(),
                     decoration: InputDecoration(
@@ -180,7 +197,7 @@ class _FilterPageState extends State<FilterPage> {
               ),
             ),
             Consumer<BrandProvider>(builder: (context, brandProvider, child) {
-              final brands = brandProvider.brandNames;
+              final brands = brandProvider.brands;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ExpansionPanelList(
@@ -198,7 +215,7 @@ class _FilterPageState extends State<FilterPage> {
                           child: Row(
                             children: [
                               Text(
-                                'Selected Brands (${selectedBrands.length})',
+                                'Selected Brands (${_selectedBrands.length})',
                                 style: TextStyle(
                                     color: AppColors.darkGray,
                                     fontFamily: AppFontFamily.fontSecondary,
@@ -220,32 +237,32 @@ class _FilterPageState extends State<FilterPage> {
                                     .map(
                                       (brand) => ChoiceChip(
                                         label: Text(
-                                          brand,
+                                          brand.label.toString(),
                                           style: TextStyle(
                                             fontFamily:
                                                 AppFontFamily.fontSecondary,
                                             fontSize: 14,
                                             letterSpacing: -0.15,
-                                            color:
-                                                selectedBrands.contains(brand)
-                                                    ? Colors.white
-                                                    : AppColors.primary,
+                                            color: _selectedBrands
+                                                    .contains(brand.id)
+                                                ? Colors.white
+                                                : AppColors.primary,
                                           ),
                                         ),
-                                        // backgroundColor: AppColors.primary,
-
                                         backgroundColor:
-                                            selectedBrands.contains(brand)
+                                            _selectedBrands.contains(brand.id)
                                                 ? AppColors.primary
                                                 : Colors.purple[50],
                                         selected:
-                                            selectedBrands.contains(brand),
+                                            _selectedBrands.contains(brand.id),
                                         onSelected: (selected) {
                                           setState(() {
                                             if (selected) {
-                                              selectedBrands.add(brand);
+                                              _selectedBrands
+                                                  .add(brand.id.toString());
                                             } else {
-                                              selectedBrands.remove(brand);
+                                              _selectedBrands
+                                                  .remove(brand.id.toString());
                                             }
                                           });
                                         },
@@ -369,10 +386,11 @@ class _FilterPageState extends State<FilterPage> {
                       selectedSortBy.add(newValue!);
                     });
                   },
-                  items: sortby.map<DropdownMenuItem<String>>((String value) {
+                  items: sortby.map<DropdownMenuItem<String>>(
+                      (Map<String, dynamic> value) {
                     return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                      value: value['id'],
+                      child: Text(value['label']),
                     );
                   }).toList(),
                   decoration: InputDecoration(

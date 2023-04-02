@@ -4,12 +4,15 @@ import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/providers/brand_provider.dart';
 import 'package:mcommerce_app/providers/category_provider.dart';
+import 'package:mcommerce_app/screens/search/filter_page.dart';
 import 'package:mcommerce_app/widgets/statefull/input_search.dart';
 import 'package:provider/provider.dart';
 
 class AppBarSearchWidget extends StatelessWidget {
   final String title;
-  const AppBarSearchWidget({Key? key, required this.title}) : super(key: key);
+  final String? catId;
+  const AppBarSearchWidget({Key? key, required this.title, this.catId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +58,12 @@ class AppBarSearchWidget extends StatelessWidget {
       actions: [
         IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, Routes.filterPage);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FilterPage(
+                            selectedCategories: [catId.toString()],
+                          )));
               final brandProvider =
                   Provider.of<BrandProvider>(context, listen: false);
               brandProvider.fetchAllBrands();

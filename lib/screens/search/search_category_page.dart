@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
+import 'package:mcommerce_app/models/category_model.dart';
 import 'package:mcommerce_app/providers/search_provider.dart';
 import 'package:mcommerce_app/screens/search/SearchPage.dart';
 import 'package:mcommerce_app/screens/search/widgets/app_bar_search_widget.dart';
 import 'package:provider/provider.dart';
 
 class SearchCategoryPage extends StatefulWidget {
-  final String keyName;
-  const SearchCategoryPage({Key? key, required this.keyName}) : super(key: key);
+  final Childrens child;
+  const SearchCategoryPage({Key? key, required this.child}) : super(key: key);
 
   @override
   _SearchCategoryPageState createState() => _SearchCategoryPageState();
@@ -35,7 +36,8 @@ class _SearchCategoryPageState extends State<SearchCategoryPage> {
       backgroundColor: AppColors.bg,
       appBar: PreferredSize(
           child: AppBarSearchWidget(
-            title: widget.keyName,
+            title: widget.child.label!,
+            catId: widget.child.id,
           ),
           preferredSize: Size.fromHeight(110.0)),
       body: int.parse(quantity) > 0
