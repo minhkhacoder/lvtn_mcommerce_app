@@ -22,4 +22,37 @@ class SearchService {
       throw Exception(e);
     }
   }
+
+  static Future<List<Data>> filterProducts(String query) async {
+    try {
+      final response =
+          await http.get(Uri.parse('${_baseUrl}/search/filter?${query}'));
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = json.decode(response.body)['data'];
+        final List<Data> products =
+            jsonData.map((data) => Data.fromJson(data)).toList();
+        return products;
+      } else {
+        throw Exception('Failed to filter product');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<List<Data>> searchProductByKey(String query) async {
+    try {
+      final response = await http.get(Uri.parse('${_baseUrl}/search?${query}'));
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = json.decode(response.body)['data'];
+        final List<Data> products =
+            jsonData.map((data) => Data.fromJson(data)).toList();
+        return products;
+      } else {
+        throw Exception('Failed to search product by key');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

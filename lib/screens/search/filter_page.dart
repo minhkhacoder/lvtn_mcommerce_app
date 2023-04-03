@@ -11,7 +11,7 @@ import 'package:mcommerce_app/screens/search/widgets/app_bar_filter_widget.dart'
 import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
 
 class FilterPage extends StatefulWidget {
-  final List<String>? selectedCategories;
+  final String? selectedCategories;
   FilterPage({
     Key? key,
     this.selectedCategories,
@@ -45,8 +45,14 @@ class _FilterPageState extends State<FilterPage> {
     setState(() {
       final searchProvider =
           Provider.of<SearchProvider>(context, listen: false);
-      _selectedCategories = widget.selectedCategories!;
-      _selectedBrands = searchProvider.brands;
+
+      if (widget.selectedCategories.toString() == "null") {
+        _selectedCategories = [];
+        _selectedBrands = [];
+      } else {
+        _selectedCategories = [widget.selectedCategories!];
+        _selectedBrands = searchProvider.brands;
+      }
     });
   }
 
@@ -459,6 +465,13 @@ class _FilterPageState extends State<FilterPage> {
                   child: ButtonWidget(
                       label: "Apply Filters",
                       onPressed: () {
+                        final searchProvider =
+                            Provider.of<SearchProvider>(context, listen: false);
+                        searchProvider.filterProducts(
+                            selectedPrice,
+                            _selectedCategories[0],
+                            _selectedBrands,
+                            selectedRating);
                         Navigator.pop(context);
                       }))
             ],

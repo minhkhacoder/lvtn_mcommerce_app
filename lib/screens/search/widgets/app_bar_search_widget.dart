@@ -62,7 +62,7 @@ class AppBarSearchWidget extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => FilterPage(
-                            selectedCategories: [catId.toString()],
+                            selectedCategories: catId.toString(),
                           )));
               final brandProvider =
                   Provider.of<BrandProvider>(context, listen: false);
