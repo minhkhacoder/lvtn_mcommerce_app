@@ -6,6 +6,7 @@ import 'package:mcommerce_app/models/cart_model.dart';
 import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/providers/delivery_provider.dart';
 import 'package:mcommerce_app/providers/payment_provider.dart';
+import 'package:mcommerce_app/providers/rating_provider.dart';
 import 'package:mcommerce_app/screens/products/widgets/item_cart_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,7 @@ class _CartPageState extends State<CartPage> {
             elevation: 0,
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, Routes.layoutPage);
+                  Navigator.pushNamed(context, Routes.homePage);
                 },
                 icon: Icon(
                   Icons.arrow_back,

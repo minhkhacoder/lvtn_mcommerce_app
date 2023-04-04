@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/providers/product_provider.dart';
 import 'package:mcommerce_app/screens/products/widgets/item_product_widget.dart';

@@ -2,12 +2,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/models/product_model.dart';
+import 'package:mcommerce_app/providers/rating_provider.dart';
 import 'package:mcommerce_app/screens/products/product_detail_page.dart';
 import 'package:mcommerce_app/screens/products/widgets/image_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/price_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/title_product_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/heading_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/star_widget.dart';
+import 'package:provider/provider.dart';
 
 class ProductSlideWidget extends StatefulWidget {
   final List<Data> products;
@@ -46,17 +48,24 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
                           ? item.image![0]
                           : '';
                       return Container(
+                        margin: EdgeInsets.only(right: 8.0),
+                        width: MediaQuery.of(context).size.width,
                         child: Column(
                           children: [
                             InkWell(
-                              onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         ProductDetailPage(products: item),
-                                //   ),
-                                // );
+                              onTap: () async {
+                                final ratingProvider =
+                                    Provider.of<RatingProvider>(context,
+                                        listen: false);
+                                await ratingProvider.fetchAllRatingByProductId(
+                                    item.id.toString());
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProductDetailPage(item: item.toJson()),
+                                  ),
+                                );
                               },
                               child: Padding(
                                 padding: EdgeInsets.zero,
@@ -68,8 +77,8 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: StarWidget(
-                                count: 5,
-                                point: 5,
+                                count: item.averageRating,
+                                point: item.ratCount,
                               ),
                             ),
                             Container(

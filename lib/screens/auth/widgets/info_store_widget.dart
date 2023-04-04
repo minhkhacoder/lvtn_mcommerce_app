@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
@@ -12,6 +13,7 @@ class InfoStoreWidget extends StatefulWidget {
 }
 
 class _InfoStoreWidgetState extends State<InfoStoreWidget> {
+  bool _isLoading = true;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,12 +25,51 @@ class _InfoStoreWidgetState extends State<InfoStoreWidget> {
             children: [
               Row(
                 children: [
-                  ClipOval(
-                    child: Image.network(
-                      "https://images.unsplash.com/photo-1604699229817-27301bdfed68?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=871&q=80",
-                      width: 60.0,
-                      height: 60.0,
-                      fit: BoxFit.cover,
+                  Container(
+                    width: 60,
+                    height: 60,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.seller['seller_avatar'],
+                      fadeInDuration: Duration(milliseconds: 300),
+                      fadeOutDuration: Duration(milliseconds: 300),
+                      imageBuilder: (context, imageProvider) {
+                        _isLoading = false;
+                        return Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                      placeholder: (context, url) {
+                        return _isLoading
+                            ? Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              )
+                            : Container();
+                      },
+                      errorWidget: (context, url, error) => Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.error),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -101,18 +142,17 @@ class _InfoStoreWidgetState extends State<InfoStoreWidget> {
           SizedBox(
             height: 20.0,
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InfoParamWidget(number: "72", text: "products"),
-              InfoParamWidget(number: "4.9", text: "reviews"),
-              InfoParamWidget(number: "99%", text: "response Chat")
-            ],
-          ),
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.center,
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     InfoParamWidget(number: "72", text: "products"),
+          //     InfoParamWidget(number: "4.9", text: "reviews"),
+          //     InfoParamWidget(number: "99%", text: "response Chat")
+          //   ],
+          // ),
         ],
       ),
     );
-    ;
   }
 }

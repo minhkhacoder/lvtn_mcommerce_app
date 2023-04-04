@@ -8,12 +8,14 @@ import 'package:mcommerce_app/models/cart_model.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/providers/product_provider.dart';
+import 'package:mcommerce_app/providers/rating_provider.dart';
 import 'package:mcommerce_app/screens/auth/widgets/info_store_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/item_cart_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/price_product_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/product_description_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/product_slide_widget.dart';
 import 'package:mcommerce_app/screens/products/widgets/review_product_widget.dart';
+import 'package:mcommerce_app/widgets/stateless/heading_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/star_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -47,6 +49,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     if (mounted) {
       // kiểm tra xem widget đã bị dispose hay chưa
       Provider.of<ProductProvider>(context, listen: false).fetchProducts();
+      Provider.of<RatingProvider>(context, listen: false)
+          .fetchAllRatingByProductId(widget.item['id']);
     }
   }
 
@@ -83,193 +87,240 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ratingProvider = Provider.of<RatingProvider>(context, listen: false);
     List<String> images = widget.item["image"];
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SingleChildScrollView(
           child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.only(top: 30.0),
-            decoration: BoxDecoration(
-                color: AppColors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    blurRadius: 5,
-                    spreadRadius: 2,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(8.0),
-                    bottomRight: Radius.circular(8.0))),
-            child: Column(
-              children: [
-                SizedBox(
-                  child: CarouselSlider(
-                    items: images
-                        .map((item) => Container(
-                              margin: EdgeInsets.symmetric(horizontal: 6.0),
-                              child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0)),
-                                child: CachedNetworkImage(
-                                  imageUrl: item.toString(),
-                                  fadeInDuration: Duration(milliseconds: 300),
-                                  fadeOutDuration: Duration(milliseconds: 300),
-                                  imageBuilder: (context, imageProvider) {
-                                    _isLoading = false;
-                                    return Container(
-                                      width: double.infinity,
-                                      height: 375.0,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.contain)),
-                                    );
-                                  },
-                                  placeholder: (context, url) {
-                                    return _isLoading
-                                        ? Container(
-                                            width: double.infinity,
-                                            height: 375.0,
-                                            child: Center(
-                                              child: CircularProgressIndicator(
-                                                color: AppColors.primary,
-                                              ),
-                                            ),
-                                          )
-                                        : Container();
-                                  },
-                                  errorWidget: (context, url, error) =>
-                                      Container(
+          Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(bottom: 10.0),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      blurRadius: 5,
+                      spreadRadius: 2,
+                      offset: Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: CarouselSlider(
+                  items: images
+                      .map((item) => Container(
+                            margin: EdgeInsets.symmetric(horizontal: 6.0),
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                              child: CachedNetworkImage(
+                                imageUrl: item.toString(),
+                                fadeInDuration: Duration(milliseconds: 300),
+                                fadeOutDuration: Duration(milliseconds: 300),
+                                imageBuilder: (context, imageProvider) {
+                                  _isLoading = false;
+                                  return Container(
                                     width: double.infinity,
                                     height: 375.0,
-                                    child: Icon(Icons.error),
-                                  ),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.contain)),
+                                  );
+                                },
+                                placeholder: (context, url) {
+                                  return _isLoading
+                                      ? Container(
+                                          width: double.infinity,
+                                          height: 375.0,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                        )
+                                      : Container();
+                                },
+                                errorWidget: (context, url, error) => Container(
+                                  width: double.infinity,
+                                  height: 375.0,
+                                  child: Icon(Icons.error),
                                 ),
-                              ),
-                            ))
-                        .toList(),
-                    carouselController: carouselController,
-                    options: CarouselOptions(
-                      height: 375.0,
-                      scrollPhysics: BouncingScrollPhysics(),
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 2,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          currentIndex = index;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: images
-                      .asMap()
-                      .entries
-                      .map<Widget>((entry) => GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                currentIndex = entry.key;
-                              });
-                              carouselController.animateToPage(
-                                entry.key,
-                                duration: Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
-                            },
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 6.0, vertical: 6.0),
-                              width: 8.0,
-                              height: 8.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: currentIndex == entry.key
-                                    ? Colors.black
-                                    : Colors.grey,
                               ),
                             ),
                           ))
                       .toList(),
+                  carouselController: carouselController,
+                  options: CarouselOptions(
+                    height: 375.0,
+                    scrollPhysics: BouncingScrollPhysics(),
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 2,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        currentIndex = index;
+                      });
+                    },
+                  ),
                 ),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      blurRadius: 1,
+                      spreadRadius: 1,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: images
+                          .asMap()
+                          .entries
+                          .map<Widget>((entry) => GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    currentIndex = entry.key;
+                                  });
+                                  carouselController.animateToPage(
+                                    entry.key,
+                                    duration: Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                  );
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 6.0, vertical: 6.0),
+                                  width: 8.0,
+                                  height: 8.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: currentIndex == entry.key
+                                        ? Colors.black
+                                        : Colors.grey,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          StarWidget(
-                            count: 5,
-                            point: 5,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              StarWidget(
+                                count: widget.item['average_rating'],
+                                point: widget.item['rat_count'],
+                              ),
+                              SizedBox(
+                                width: 10.0,
+                              ),
+                              Text(
+                                '${widget.item["rat_count"].toString()} reviews',
+                                style: TextStyle(
+                                    color: AppColors.darkGray,
+                                    fontFamily: AppFontFamily.fontSecondary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400),
+                              )
+                            ],
                           ),
                           SizedBox(
-                            width: 10.0,
+                            height: 16.0,
                           ),
                           Text(
-                            '${widget.item["rat_count"].toString()} reviews',
+                            widget.item["name"].toString(),
                             style: TextStyle(
-                                color: AppColors.darkGray,
+                                color: AppColors.dark,
                                 fontFamily: AppFontFamily.fontSecondary,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 20,
+                                letterSpacing: -0.15),
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          PriceProductWidget(
+                              originalPrice:
+                                  double.parse(widget.item["price"].toString()),
+                              fontSize: 28),
+                          SizedBox(
+                            height: 24.0,
+                          ),
+                          InfoStoreWidget(
+                            seller: widget.item["seller"],
                           )
                         ],
                       ),
-                      SizedBox(
-                        height: 16.0,
-                      ),
-                      Text(
-                        widget.item["name"].toString(),
-                        style: TextStyle(
-                            color: AppColors.dark,
-                            fontFamily: AppFontFamily.fontSecondary,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 20,
-                            letterSpacing: -0.15),
-                      ),
-                      SizedBox(
-                        height: 16.0,
-                      ),
-                      PriceProductWidget(
-                          originalPrice:
-                              double.parse(widget.item["price"].toString()),
-                          fontSize: 28),
-                      SizedBox(
-                        height: 24.0,
-                      ),
-                      InfoStoreWidget(
-                        seller: widget.item["seller"],
-                      )
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Container(
-                    margin: EdgeInsets.only(top: 16.0, bottom: 16.0),
-                    padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                    decoration: BoxDecoration(
-                        color: AppColors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            blurRadius: 5,
-                            spreadRadius: 2,
-                            offset: Offset(0, 3),
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 16.0, bottom: 16.0),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  decoration: BoxDecoration(
+                      color: AppColors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                  child: ProductDescriptionWidget(
+                      description: widget.item["desc"].toString())),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      blurRadius: 5,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                ),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      HeadingWidget(
+                        title: "Review",
+                        child: Text(
+                          "See All",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: AppFontFamily.fontSecondary,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.gray,
                           ),
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    child: ProductDescriptionWidget(
-                        description: widget.item["desc"].toString())),
-                ReviewProductWidget(),
-              ],
-            ),
+                        ),
+                      ),
+                      ReviewProductWidget(
+                        ratings: ratingProvider.ratings,
+                      )
+                    ]),
+              ),
+            ],
           ),
           Consumer<ProductProvider>(
             builder: (context, productProvider, child) {

@@ -11,6 +11,7 @@ import 'package:mcommerce_app/providers/delivery_provider.dart';
 import 'package:mcommerce_app/providers/order_provider.dart';
 import 'package:mcommerce_app/providers/payment_provider.dart';
 import 'package:mcommerce_app/providers/product_provider.dart';
+import 'package:mcommerce_app/providers/rating_provider.dart';
 import 'package:mcommerce_app/providers/search_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         ChangeNotifierProvider(create: (_) => BrandProvider()),
+        ChangeNotifierProvider(create: (_) => RatingProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
