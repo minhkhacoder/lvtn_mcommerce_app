@@ -39,4 +39,26 @@ class AuthService {
       throw Exception(e);
     }
   }
+
+  Future<bool> updateInfoAccount(String id, String? username, String? email,
+      String? gender, String? address) async {
+    try {
+      final response =
+          await http.put(Uri.parse('${_baseUrl}/customer/update-info'), body: {
+        "id": id,
+        "username": username,
+        "email": email,
+        "gender": gender,
+        "address": address
+      });
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to update infomation');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

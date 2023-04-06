@@ -3,13 +3,11 @@ import 'package:mcommerce_app/models/category_model.dart';
 import 'package:mcommerce_app/services/category_service.dart';
 
 class CategoryProvider with flutter.ChangeNotifier {
-  late List<Childrens> _childrens;
+  late List<Childrens> _childrens = [];
   late List<Data> _categories;
-  late List<String> _listLabel;
 
   List<Childrens> get childrens => _childrens;
   List<Data> get categories => _categories;
-  List<String> get listLabel => _listLabel;
 
   Future<List<Childrens>> fetchCategoriesByParentId(String parentId) async {
     _childrens = await CategoryService.fetchAllCategoryByParentId(parentId);
@@ -23,7 +21,6 @@ class CategoryProvider with flutter.ChangeNotifier {
     _categories = await CategoryService.fetchAllCategory();
 
     _categories.forEach((category) {
-      _listLabel.add(category.label.toString());
       category.childrens?.forEach((child) {
         categoryLabels.add(child);
       });

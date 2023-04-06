@@ -9,6 +9,7 @@ import 'package:mcommerce_app/screens/home/widgets/app_bar_home_widget.dart';
 import 'package:mcommerce_app/screens/home/widgets/home_body_widget.dart';
 import 'package:mcommerce_app/screens/profile/profile_page.dart';
 import 'package:mcommerce_app/screens/profile/widgets/app_bar_profile_widget.dart';
+import 'package:mcommerce_app/screens/profile/widgets/list_app_bar_profile.dart';
 
 import 'package:mcommerce_app/widgets/stateless/gradient_widget.dart';
 import 'package:provider/provider.dart';
@@ -40,16 +41,27 @@ final List<Widget> _appBar = [
   AppBarHomeWidget(),
   AppBarCategoryWidget(),
   AppBarCategoryWidget(),
-  AppBarProfileWidget()
+  // AppBarProfileWidget()
+  ListAppBarProfile()
 ];
 
 class _LayoutWidgetState extends State<LayoutWidget> {
   late int _selectedIndex;
-
+  double _sizeAppBar = 110.0;
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.selectedIndex;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (mounted) {
+      // kiểm tra xem widget đã bị dispose hay chưa
+      final authProvider = Provider.of<AuthProvider>(context, listen: true);
+      _sizeAppBar = authProvider.sizeHeightAppBar;
+    }
   }
 
   @override
@@ -63,7 +75,7 @@ class _LayoutWidgetState extends State<LayoutWidget> {
               index: _selectedIndex,
               children: _appBar,
             ),
-            preferredSize: Size.fromHeight(110.0)),
+            preferredSize: Size.fromHeight(_sizeAppBar)),
         body: IndexedStack(
           index: _selectedIndex,
           children: _pages,

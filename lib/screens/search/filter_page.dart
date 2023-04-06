@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:mcommerce_app/models/category_model.dart';
 import 'package:mcommerce_app/providers/search_provider.dart';
+import 'package:mcommerce_app/screens/categories/category_page.dart';
 import 'package:provider/provider.dart';
 
 import 'package:mcommerce_app/config/themes/app_colors.dart';
@@ -28,6 +30,8 @@ class _FilterPageState extends State<FilterPage> {
     {"id": "new", "label": "New"},
   ];
 
+  List<Childrens> categories = [];
+
   List<String> _selectedCategories = [];
   List<String> _selectedBrands = [];
   List<String> selectedSortBy = [];
@@ -45,15 +49,28 @@ class _FilterPageState extends State<FilterPage> {
     setState(() {
       final searchProvider =
           Provider.of<SearchProvider>(context, listen: false);
-
-      if (widget.selectedCategories.toString() == "null") {
-        _selectedCategories = [];
-        _selectedBrands = [];
-      } else {
+      if (widget.selectedCategories.toString() != "null") {
         _selectedCategories = [widget.selectedCategories!];
         _selectedBrands = searchProvider.brands;
+      } else {
+        _selectedBrands = [];
+        _selectedCategories = [];
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (mounted) {
+      final categoryProvider =
+          Provider.of<CategoryProvider>(context, listen: true);
+      if (categoryProvider.childrens.isNotEmpty) {
+        categories = categoryProvider.childrens;
+      } else {
+        categories = [];
+      }
+    }
   }
 
   @override
@@ -135,62 +152,57 @@ class _FilterPageState extends State<FilterPage> {
                 ),
               ),
             ),
-            Consumer<CategoryProvider>(
-                builder: (context, categoryProvider, child) {
-              final categories = categoryProvider.childrens;
-              return Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: DropdownButtonFormField<String>(
-                    menuMaxHeight: 400.0,
-                    style: TextStyle(
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: DropdownButtonFormField<String>(
+                  menuMaxHeight: 400.0,
+                  style: TextStyle(
+                      color: AppColors.darkGray,
+                      fontFamily: AppFontFamily.fontSecondary,
+                      fontSize: 14,
+                      letterSpacing: -0.15),
+                  value: _selectedCategories.isNotEmpty
+                      ? _selectedCategories[0]
+                      : null,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedCategories.clear();
+                      _selectedCategories.add(newValue!);
+                    });
+                  },
+                  items: categories.map<DropdownMenuItem<String>>((category) {
+                    return DropdownMenuItem<String>(
+                      value: category.id,
+                      child: Text(category.label.toString()),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    hintText: 'Select categories',
+                    hintStyle: TextStyle(
                         color: AppColors.darkGray,
                         fontFamily: AppFontFamily.fontSecondary,
                         fontSize: 14,
                         letterSpacing: -0.15),
-                    value: _selectedCategories.isNotEmpty
-                        ? _selectedCategories[0]
-                        : null,
-                    onChanged: (newValue) {
-                      print(newValue);
-                      setState(() {
-                        _selectedCategories.clear();
-                        _selectedCategories.add(newValue!);
-                      });
-                    },
-                    items: categories.map<DropdownMenuItem<String>>((category) {
-                      return DropdownMenuItem<String>(
-                        value: category.id,
-                        child: Text(category.label.toString()),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      hintText: 'Select categories',
-                      hintStyle: TextStyle(
-                          color: AppColors.darkGray,
-                          fontFamily: AppFontFamily.fontSecondary,
-                          fontSize: 14,
-                          letterSpacing: -0.15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: AppColors.grayLight),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(color: AppColors.grayLight),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),
-              );
-            }),
+              ),
+            ),
             Divider(),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -467,11 +479,14 @@ class _FilterPageState extends State<FilterPage> {
                       onPressed: () {
                         final searchProvider =
                             Provider.of<SearchProvider>(context, listen: false);
-                        searchProvider.filterProducts(
-                            selectedPrice,
-                            _selectedCategories[0],
-                            _selectedBrands,
-                            selectedRating);
+                        String? catId = "";
+
+                        if (_selectedCategories.isNotEmpty) {
+                          catId = _selectedCategories[0];
+                        }
+
+                        searchProvider.filterProducts(selectedPrice, catId,
+                            _selectedBrands, selectedRating);
                         Navigator.pop(context);
                       }))
             ],

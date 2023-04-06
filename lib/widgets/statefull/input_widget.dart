@@ -3,6 +3,7 @@ import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 
 class InputWidget extends StatefulWidget {
+  final String? initialValue; // thêm giá trị khởi tạo ban đầu ở đây
   final String labelText;
   final TextInputType textInputType;
   final Widget? suffixIcon;
@@ -10,6 +11,7 @@ class InputWidget extends StatefulWidget {
   final bool obscureText;
   final FormFieldValidator<String> validator;
   final FormFieldSetter<String>? onSaved;
+
   const InputWidget({
     Key? key,
     required this.labelText,
@@ -19,6 +21,7 @@ class InputWidget extends StatefulWidget {
     this.suffixIcon,
     this.obscureText = false,
     this.prefixIcon,
+    this.initialValue, // và truyền vào đây
   }) : super(key: key);
 
   @override
@@ -29,35 +32,40 @@ class _InputWidgetState extends State<InputWidget> {
   final _controller = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _controller.text = widget.initialValue ?? '';
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
-  // get controller => null;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
-        controller: this._controller,
+        controller: _controller,
         decoration: InputDecoration(
-            labelText: widget.labelText,
-            labelStyle: TextStyle(
-              color: AppColors.darkGray,
-              fontSize: 16,
-              fontFamily: AppFontFamily.fontSecondary,
-              fontWeight: FontWeight.w600,
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.line),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.primary),
-            ),
-            suffixIcon: widget.suffixIcon,
-            prefixIcon: widget.prefixIcon),
+          labelText: widget.labelText,
+          labelStyle: TextStyle(
+            color: AppColors.darkGray,
+            fontSize: 16,
+            fontFamily: AppFontFamily.fontSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: AppColors.line),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: AppColors.primary),
+          ),
+          suffixIcon: widget.suffixIcon,
+          prefixIcon: widget.prefixIcon,
+        ),
         cursorColor: AppColors.primary,
         keyboardType: widget.textInputType,
         validator: widget.validator,

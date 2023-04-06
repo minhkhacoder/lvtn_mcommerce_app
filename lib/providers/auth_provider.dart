@@ -10,11 +10,16 @@ class AuthProvider with ChangeNotifier {
   String? _refreshToken;
   bool _isAuthenticated = false;
   bool _isSignup = false;
+  int _selectIndexProfile = 0;
+  double _sizeHeightAppBar = 110.0;
+
   Data? get user => _user;
   String? get accessToken => _accessToken;
   String? get refreshToken => _refreshToken;
   bool get isAuthenticated => _isAuthenticated;
   bool get isSignup => _isSignup;
+  int get selectIndexProfile => _selectIndexProfile;
+  double get sizeHeightAppBar => _sizeHeightAppBar;
 
   Future<void> login(String phone, String password) async {
     final authService = AuthService();
@@ -72,7 +77,25 @@ class AuthProvider with ChangeNotifier {
       _accessToken = prefs.getString('accessToken') ?? '';
       _refreshToken = prefs.getString('refreshToken') ?? '';
       _isAuthenticated = true;
+    }
+
+    notifyListeners();
+  }
+
+  void changePageIndexProfile(int index, double size) {
+    _selectIndexProfile = index;
+    _sizeHeightAppBar = size;
+    notifyListeners();
+  }
+
+  Future<void> updateInfoAccount(String id, String? username, String? email,
+      String? gender, String? address) async {
+    final authService = AuthService();
+    try {
+      await authService.updateInfoAccount(id, username, email, gender, address);
       notifyListeners();
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }
