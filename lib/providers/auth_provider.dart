@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:mcommerce_app/models/user_model.dart';
 import 'package:mcommerce_app/services/auth_service.dart';
@@ -89,10 +90,28 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> updateInfoAccount(String id, String? username, String? email,
-      String? gender, String? address) async {
+      String? gender, String? address, File? avatar) async {
     final authService = AuthService();
     try {
-      await authService.updateInfoAccount(id, username, email, gender, address);
+      final avatarLink = await authService.updateInfoAccount(
+          id, username, email, gender, address, avatar);
+      final prefs = await SharedPreferences.getInstance();
+      final userData = prefs.getString('userData');
+      if (userData != null) {
+        final userJson = json.decode(userData);
+        if (userJson != null) {
+          userJson['username'] = username;
+          userJson['email'] = email;
+          userJson['gender'] = gender;
+          userJson['address'] = address;
+          if (avatarLink != "") {
+            userJson['avatar'] = avatarLink;
+          }
+          print(userJson['avatar']);
+          prefs.setString('userData', json.encode(userJson));
+        }
+        _user = Data.fromJson(userJson);
+      }
       notifyListeners();
     } catch (e) {
       throw Exception(e);

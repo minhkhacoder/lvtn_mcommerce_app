@@ -45,6 +45,7 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
       _gender = authProvider.user!.cusGender.toString() == "null"
           ? ""
           : authProvider.user!.cusGender.toString();
+
       _address = authProvider.user!.cusAddress.toString() == "null"
           ? ""
           : authProvider.user!.cusAddress.toString();
@@ -78,7 +79,9 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
             labelText: "Enter your email",
             textInputType: TextInputType.text,
             onSaved: (value) {
-              _email = value!;
+              setState(() {
+                _email = value!;
+              });
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -92,9 +95,7 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
             labelText: 'Gender',
             options: ['Male', 'Female', 'Other'],
             onValueChanged: (selectedOption) {
-              setState(() {
-                _gender = selectedOption;
-              });
+              _gender = selectedOption;
             },
             initialValue: _gender,
           ),
@@ -103,7 +104,9 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
             placeHolder: 'Enter your address',
             maxLines: 5,
             onSaved: (value) {
-              _address = value!;
+              setState(() {
+                _address = value!;
+              });
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -122,7 +125,11 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
                   if (_formKey.currentState?.validate() ?? false) {
                     _formKey.currentState?.save();
                   }
+                  String? id = authProvider.user!.cusId;
+                  await authProvider.updateInfoAccount(id!, _username, _email,
+                      _gender, _address, _selectedImageFile);
                   _formKey.currentState?.reset();
+                  await authProvider.loadUserData();
                   authProvider.changePageIndexProfile(0, 110.0);
                 }),
           ),

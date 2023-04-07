@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mcommerce_app/models/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static final String _baseUrl = dotenv.env['BASEURL']!;
@@ -26,8 +28,10 @@ class AuthService {
 
   Future<String> signup(String username, String phone, String password) async {
     try {
-      final response = await http.post(Uri.parse('${_baseUrl}/customer/signup'),
-          body: {'username': username, 'phone': phone, 'password': password});
+      final response = await http.post(
+        Uri.parse('${_baseUrl}/customer/signup'),
+        body: {'username': username, 'phone': phone, 'password': password},
+      );
 
       print(response.body);
       if (response.statusCode == 200) {
@@ -40,22 +44,50 @@ class AuthService {
     }
   }
 
-  Future<bool> updateInfoAccount(String id, String? username, String? email,
-      String? gender, String? address) async {
+  Future<String> updateInfoAccount(String id, String? username, String? email,
+      String? gender, String? address, File? avatar) async {
+    print(avatar);
+    final prefs = await SharedPreferences.getInstance();
+    String? accessToken = prefs.getString('accessToken') ?? '';
+    final Map<String, String> headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'multipart/form-data',
+    };
+
     try {
-      final response =
-          await http.put(Uri.parse('${_baseUrl}/customer/update-info'), body: {
-        "id": id,
-        "username": username,
-        "email": email,
-        "gender": gender,
-        "address": address
-      });
+      final request = http.MultipartRequest(
+        'PUT',
+        Uri.parse('${_baseUrl}/customer/update-info'),
+      );
+
+      // add fields
+      request.fields['id'] = id;
+      if (username != null) request.fields['username'] = username;
+      if (email != null) request.fields['email'] = email;
+      if (gender != null) request.fields['gender'] = gender;
+      if (address != null) request.fields['address'] = address;
+      request.headers.addAll(headers);
+      // add avatar
+      if (avatar != null) {
+        request.files.add(
+          http.MultipartFile(
+            'avatar',
+            avatar.readAsBytes().asStream(),
+            avatar.lengthSync(),
+            filename: avatar.path.split('/').last,
+          ),
+        );
+      }
+
+      final response = await request.send();
+      final responseString = await response.stream.bytesToString();
+
+      print(responseString);
 
       if (response.statusCode == 200) {
-        return true;
+        return json.decode(responseString)['avatar'];
       } else {
-        throw Exception('Failed to update infomation');
+        throw Exception('Failed to update information');
       }
     } catch (e) {
       throw Exception(e);

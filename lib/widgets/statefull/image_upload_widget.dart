@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
+import 'package:mcommerce_app/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class ImageUploadWidget extends StatefulWidget {
   final ValueChanged<File?> onImageSelected;
@@ -19,6 +21,19 @@ class ImageUploadWidget extends StatefulWidget {
 class _ImageUploadWidgetState extends State<ImageUploadWidget> {
   final ImagePicker _picker = ImagePicker();
   File? _imageFile;
+
+  String _avatar = "";
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final authProvider = Provider.of<AuthProvider>(context, listen: true);
+    if (authProvider.user != null) {
+      setState(() {
+        _avatar = authProvider.user!.cusAvatar?.toString() ?? "";
+      });
+    }
+  }
 
   Future<void> _getImage(ImageSource source) async {
     try {
@@ -65,8 +80,10 @@ class _ImageUploadWidgetState extends State<ImageUploadWidget> {
                 radius: 50,
                 backgroundImage: _imageFile != null
                     ? FileImage(_imageFile!)
-                    : AssetImage('assets/images/default_avatar.jpg')
-                        as ImageProvider<Object>,
+                    : (_avatar != ""
+                        ? NetworkImage(_avatar)
+                        : AssetImage('assets/images/default_avatar.jpg')
+                            as ImageProvider<Object>),
                 child: IconButton(
                   icon: Icon(Icons.camera_alt),
                   onPressed: () => _getImage(ImageSource.gallery),

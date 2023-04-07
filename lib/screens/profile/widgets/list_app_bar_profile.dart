@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
-import 'package:mcommerce_app/screens/profile/widgets/app_bar_address_profile.dart';
 import 'package:mcommerce_app/screens/profile/widgets/app_bar_info_profile.dart';
+import 'package:mcommerce_app/screens/profile/widgets/app_bar_order_profile.dart';
+import 'package:mcommerce_app/screens/profile/widgets/app_bar_payment_profile.dart';
 import 'package:mcommerce_app/screens/profile/widgets/app_bar_profile_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,8 @@ class ListAppBarProfile extends StatefulWidget {
 final List<Widget> _pages = [
   AppBarProfileWidget(),
   AppBarInfoProfile(),
-  AppBarAddressProfile()
+  AppBarPaymentProfile(),
+  AppBarOrderProfile()
 ];
 
 class _ListAppBarProfileState extends State<ListAppBarProfile> {
@@ -27,7 +29,6 @@ class _ListAppBarProfileState extends State<ListAppBarProfile> {
     final authProvider = Provider.of<AuthProvider>(context, listen: true);
     setState(() {
       _selectIndex = authProvider.selectIndexProfile;
-      print(_selectIndex);
     });
   }
 

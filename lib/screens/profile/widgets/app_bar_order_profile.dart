@@ -4,8 +4,8 @@ import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-class AppBarAddressProfile extends StatelessWidget {
-  const AppBarAddressProfile({Key? key}) : super(key: key);
+class AppBarOrderProfile extends StatelessWidget {
+  const AppBarOrderProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class AppBarAddressProfile extends StatelessWidget {
       title: Row(
         children: [
           Text(
-            "Shipping Addresses",
+            "Orders",
             style: TextStyle(
                 color: AppColors.white,
                 fontFamily: AppFontFamily.fontThird,

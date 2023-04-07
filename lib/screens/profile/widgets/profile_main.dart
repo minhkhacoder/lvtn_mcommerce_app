@@ -21,25 +21,14 @@ class _ProfileMainState extends State<ProfileMain> {
         children: [
           ProfileItemWidget(
             icon: Icon(
-              Icons.location_on_outlined,
-              size: 24,
-              color: AppColors.primary,
-            ),
-            title: 'Shipping Addresses',
-            onTap: () {
-              authProvider.changePageIndexProfile(2, 60.0);
-            },
-          ),
-          SizedBox(
-            height: 16,
-          ),
-          ProfileItemWidget(
-            icon: Icon(
               Icons.credit_card_outlined,
               size: 24,
               color: AppColors.primary,
             ),
             title: 'Payment Methods',
+            onTap: () {
+              authProvider.changePageIndexProfile(2, 60.0);
+            },
           ),
           SizedBox(
             height: 16,
@@ -51,6 +40,9 @@ class _ProfileMainState extends State<ProfileMain> {
               color: AppColors.primary,
             ),
             title: 'Orders',
+            onTap: () {
+              authProvider.changePageIndexProfile(3, 60.0);
+            },
           ),
           SizedBox(
             height: 16,
