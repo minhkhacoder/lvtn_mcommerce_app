@@ -117,4 +117,24 @@ class AuthProvider with ChangeNotifier {
       throw Exception(e);
     }
   }
+
+  Future<void> updateAddressAccount(String id, String? address) async {
+    final authService = AuthService();
+    try {
+      await authService.updateAddressAccount(id, address);
+      final prefs = await SharedPreferences.getInstance();
+      final userData = prefs.getString('userData');
+      if (userData != null) {
+        final userJson = json.decode(userData);
+        if (userJson != null) {
+          userJson['address'] = address;
+          prefs.setString('userData', json.encode(userJson));
+        }
+        _user = Data.fromJson(userJson);
+      }
+      notifyListeners();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

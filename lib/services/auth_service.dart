@@ -33,7 +33,7 @@ class AuthService {
         body: {'username': username, 'phone': phone, 'password': password},
       );
 
-      print(response.body);
+      // print(response.body);
       if (response.statusCode == 200) {
         return "Account registered successfully!";
       } else {
@@ -46,7 +46,6 @@ class AuthService {
 
   Future<String> updateInfoAccount(String id, String? username, String? email,
       String? gender, String? address, File? avatar) async {
-    print(avatar);
     final prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('accessToken') ?? '';
     final Map<String, String> headers = {
@@ -88,6 +87,29 @@ class AuthService {
         return json.decode(responseString)['avatar'];
       } else {
         throw Exception('Failed to update information');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<bool> updateAddressAccount(String id, String? address) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('accessToken') ?? '';
+      final Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+      };
+
+      final response = await http.put(
+          Uri.parse('${_baseUrl}/customer/update-address'),
+          body: {'id': id, 'address': address},
+          headers: headers);
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to update address');
       }
     } catch (e) {
       throw Exception(e);

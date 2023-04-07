@@ -33,10 +33,10 @@ class _OrderPageState extends State<OrderPage> {
   var _isDelivery = 0;
   String shipId = "SHIP01";
   String payId = "";
-  String orderAddress =
-      "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA";
+  String? _orderAddress;
   int index = 0;
   Data? payment;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -45,6 +45,15 @@ class _OrderPageState extends State<OrderPage> {
       payment = Provider.of<PaymentProvider>(context, listen: false)
           .getPaymentAtIndex(index);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      _orderAddress = authProvider.user?.cusAddress;
+    });
   }
 
   void _showSuccessModal(BuildContext context) async {
@@ -58,13 +67,21 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void _showCardFormPaymentModal(BuildContext context) async {
-    final result = await showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return PaymentCardModal();
+        return PaymentCardModal(
+          address: _orderAddress ?? "",
+        );
       },
-    );
-    if (result == null) Navigator.pushNamed(context, Routes.homePage);
+    ).then((value) {
+      if (value != null) {
+        setState(() {
+          _orderAddress = value;
+          print(_orderAddress);
+        });
+      }
+    });
   }
 
   void handleCreateOrder() async {
@@ -75,6 +92,7 @@ class _OrderPageState extends State<OrderPage> {
     for (int i = 0; i < carts.length; i++) {
       int? quantity = carts[i].quantity;
       double? price = double.parse(carts[i].price!);
+      // print(quantity! * price);
       OrderDetail orderDetail = OrderDetail(
           proId: carts[i].id,
           ordtPrice: quantity! * price,
@@ -82,9 +100,9 @@ class _OrderPageState extends State<OrderPage> {
       orderProvider.addOrderDetail(orderDetail);
     }
     String accId = authProvider.user?.accId ?? '';
-    if (payId.isNotEmpty) {
+    if (payId.isNotEmpty && _orderAddress != "") {
       bool result =
-          await orderProvider.createOrder(accId, shipId, payId, orderAddress);
+          await orderProvider.createOrder(accId, shipId, payId, _orderAddress!);
       if (result == true) {
         cartProvider.resetCarts();
         _showSuccessModal(context);
@@ -138,7 +156,7 @@ class _OrderPageState extends State<OrderPage> {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final deliveryProvider =
         Provider.of<DeliveryProvider>(context, listen: false);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: true);
     final stringAvatarPay = payment?.payAvatar;
     final stringNamePay = payment?.payName;
 
@@ -244,6 +262,8 @@ class _OrderPageState extends State<OrderPage> {
                   ],
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -289,7 +309,7 @@ class _OrderPageState extends State<OrderPage> {
                       ],
                     ),
                     Text(
-                      orderAddress,
+                      _orderAddress ?? "Please provide the delivery address!",
                       style: TextStyle(
                         color: AppColors.darkGray,
                         fontSize: 14,
