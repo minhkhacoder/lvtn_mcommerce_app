@@ -8,6 +8,7 @@ import 'package:mcommerce_app/providers/brand_provider.dart';
 import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/providers/category_provider.dart';
 import 'package:mcommerce_app/providers/delivery_provider.dart';
+import 'package:mcommerce_app/providers/order_detail_provider.dart';
 import 'package:mcommerce_app/providers/order_provider.dart';
 import 'package:mcommerce_app/providers/payment_provider.dart';
 import 'package:mcommerce_app/providers/product_provider.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DeliveryProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => OrderDetailProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         ChangeNotifierProvider(create: (_) => BrandProvider()),

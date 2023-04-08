@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
+import 'package:mcommerce_app/providers/order_detail_provider.dart';
 import 'package:mcommerce_app/screens/profile/widgets/profile_item_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -40,8 +41,12 @@ class _ProfileMainState extends State<ProfileMain> {
               color: AppColors.primary,
             ),
             title: 'Orders',
-            onTap: () {
+            onTap: () async {
               authProvider.changePageIndexProfile(3, 60.0);
+              final orderDetailProvider =
+                  Provider.of<OrderDetailProvider>(context, listen: false);
+              await orderDetailProvider
+                  .getAllOrders(authProvider.user!.accId.toString());
             },
           ),
           SizedBox(

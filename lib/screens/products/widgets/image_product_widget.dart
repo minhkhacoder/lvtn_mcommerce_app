@@ -4,8 +4,10 @@ import 'package:mcommerce_app/config/themes/app_colors.dart';
 
 class ImageProductWidget extends StatefulWidget {
   final String image_url;
+  final bool isHeart;
 
-  const ImageProductWidget({Key? key, required this.image_url})
+  const ImageProductWidget(
+      {Key? key, required this.image_url, this.isHeart = true})
       : super(key: key);
 
   @override
@@ -62,29 +64,32 @@ class _ImageProductWidgetState extends State<ImageProductWidget> {
               ),
             ),
           ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    blurRadius: 5,
-                    spreadRadius: 2,
-                    offset: Offset(0, 3),
+          widget.isHeart
+              ? Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                    ),
+                    child: IconButton(
+                      iconSize: 24,
+                      icon: Icon(Icons.favorite_outline,
+                          color: AppColors.primary),
+                      onPressed: () {},
+                    ),
                   ),
-                ],
-                color: AppColors.white,
-                borderRadius: BorderRadius.all(Radius.circular(100.0)),
-              ),
-              child: IconButton(
-                iconSize: 24,
-                icon: Icon(Icons.favorite_outline, color: AppColors.primary),
-                onPressed: () {},
-              ),
-            ),
-          ),
+                )
+              : Container(),
         ],
       ),
     );
