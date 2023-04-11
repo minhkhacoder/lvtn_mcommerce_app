@@ -8,7 +8,6 @@ import 'package:mcommerce_app/screens/categories/widgets/app_bar_category_widget
 import 'package:mcommerce_app/screens/home/widgets/app_bar_home_widget.dart';
 import 'package:mcommerce_app/screens/home/widgets/home_body_widget.dart';
 import 'package:mcommerce_app/screens/profile/profile_page.dart';
-import 'package:mcommerce_app/screens/profile/widgets/app_bar_profile_widget.dart';
 import 'package:mcommerce_app/screens/profile/widgets/list_app_bar_profile.dart';
 
 import 'package:mcommerce_app/widgets/stateless/gradient_widget.dart';
@@ -41,7 +40,6 @@ final List<Widget> _appBar = [
   AppBarHomeWidget(),
   AppBarCategoryWidget(),
   AppBarCategoryWidget(),
-  // AppBarProfileWidget()
   ListAppBarProfile()
 ];
 
@@ -51,7 +49,9 @@ class _LayoutWidgetState extends State<LayoutWidget> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.selectedIndex;
+    setState(() {
+      _selectedIndex = widget.selectedIndex;
+    });
   }
 
   @override
@@ -68,6 +68,7 @@ class _LayoutWidgetState extends State<LayoutWidget> {
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
         backgroundColor: AppColors.bg,
         appBar: PreferredSize(

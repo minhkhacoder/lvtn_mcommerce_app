@@ -6,7 +6,7 @@ import 'package:mcommerce_app/screens/categories/category_page.dart';
 import 'package:mcommerce_app/screens/home/get_started_page.dart';
 import 'package:mcommerce_app/screens/home/home_page.dart';
 import 'package:mcommerce_app/screens/orders/order_page.dart';
-import 'package:mcommerce_app/screens/products/product_detail_page.dart';
+import 'package:mcommerce_app/screens/profile/profile_page.dart';
 import 'package:mcommerce_app/screens/search/filter_page.dart';
 import 'package:mcommerce_app/widgets/stateless/layout-widget.dart';
 
@@ -48,6 +48,10 @@ class Routers {
       case "FilterPage":
         {
           return MaterialPageRoute(builder: (_) => FilterPage());
+        }
+      case "ProfilePage":
+        {
+          return MaterialPageRoute(builder: (_) => ProfilePage());
         }
       default:
         return _errorRoute();

@@ -107,7 +107,6 @@ class AuthProvider with ChangeNotifier {
           if (avatarLink != "") {
             userJson['avatar'] = avatarLink;
           }
-          print(userJson['avatar']);
           prefs.setString('userData', json.encode(userJson));
         }
         _user = Data.fromJson(userJson);

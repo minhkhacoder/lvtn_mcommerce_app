@@ -32,7 +32,7 @@ class _OrderPageState extends State<OrderPage> {
   var _delivery;
   var _isDelivery = 0;
   String shipId = "SHIP01";
-  String payId = "";
+  String payId = "PAY01";
   String? _orderAddress;
   int index = 0;
   Data? payment;
@@ -42,8 +42,10 @@ class _OrderPageState extends State<OrderPage> {
     super.didChangeDependencies();
     if (mounted) {
       // kiểm tra xem widget đã bị dispose hay chưa
-      payment = Provider.of<PaymentProvider>(context, listen: false)
-          .getPaymentAtIndex(index);
+      setState(() {
+        payment = Provider.of<PaymentProvider>(context, listen: false)
+            .getPaymentAtIndex(index);
+      });
     }
   }
 
@@ -78,7 +80,7 @@ class _OrderPageState extends State<OrderPage> {
       if (value != null) {
         setState(() {
           _orderAddress = value;
-          print(_orderAddress);
+          // print(_orderAddress);
         });
       }
     });
@@ -92,7 +94,6 @@ class _OrderPageState extends State<OrderPage> {
     for (int i = 0; i < carts.length; i++) {
       int? quantity = carts[i].quantity;
       double? price = double.parse(carts[i].price!);
-      // print(quantity! * price);
       OrderDetail orderDetail = OrderDetail(
           proId: carts[i].id,
           ordtPrice: quantity! * price,
@@ -100,6 +101,7 @@ class _OrderPageState extends State<OrderPage> {
       orderProvider.addOrderDetail(orderDetail);
     }
     String accId = authProvider.user?.accId ?? '';
+    print(payId);
     if (payId.isNotEmpty && _orderAddress != "") {
       bool result =
           await orderProvider.createOrder(accId, shipId, payId, _orderAddress!);

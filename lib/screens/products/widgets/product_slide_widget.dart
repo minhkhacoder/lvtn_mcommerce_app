@@ -40,7 +40,7 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
               children: [
                 InkWell(
                   onTap: () {
-                    print(currentIndex);
+                    // print(currentIndex);
                   },
                   child: CarouselSlider(
                     items: widget.products.map((item) {

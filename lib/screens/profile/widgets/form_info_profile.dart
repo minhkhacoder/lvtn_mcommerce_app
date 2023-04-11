@@ -28,7 +28,6 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
   void _onImageSelected(File? imageFile) {
     setState(() {
       _selectedImageFile = imageFile;
-      print(_selectedImageFile);
     });
   }
 

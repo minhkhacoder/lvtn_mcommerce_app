@@ -86,7 +86,6 @@ class _ProfileOrderState extends State<ProfileOrder> {
                         shrinkWrap: true,
                         itemCount: details.length,
                         itemBuilder: (context, index) {
-                          print(details[index]['products']['image']);
                           return Padding(
                             padding: const EdgeInsets.only(
                                 top: 16.0, left: 16.0, right: 16.0),

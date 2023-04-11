@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class AppBarProfileWidget extends StatefulWidget {
   const AppBarProfileWidget({Key? key}) : super(key: key);
@@ -13,21 +15,16 @@ class AppBarProfileWidget extends StatefulWidget {
 
 class _AppBarProfileWidgetState extends State<AppBarProfileWidget> {
   String _avatar = "";
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final authProvider = Provider.of<AuthProvider>(context, listen: true);
-    if (authProvider.user != null) {
-      setState(() {
-        _avatar = authProvider.user!.cusAvatar?.toString() ?? "";
-      });
-    }
-  }
+  bool _isLoading = true;
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: true);
+
+    setState(() {
+      _avatar = authProvider.user!.cusAvatar?.toString() ?? "";
+      // print(_avatar);
+    });
     return AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -55,57 +52,47 @@ class _AppBarProfileWidgetState extends State<AppBarProfileWidget> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 35,
-                    child: CircleAvatar(
-                      radius: 35,
-                      backgroundColor: Colors.grey[300],
-                      child: ClipOval(
-                        child: SizedBox(
-                          width: 70,
-                          height: 70,
-                          child: Stack(
-                            children: [
-                              Center(
-                                child: _avatar.isEmpty
-                                    ? Icon(
-                                        Icons.person,
-                                        size: 40,
-                                        color: AppColors.primary,
-                                      )
-                                    : null,
-                              ),
-                              Center(
-                                child: _avatar.isNotEmpty
-                                    ? Image.network(
-                                        _avatar,
-                                        fit: BoxFit.contain,
-                                        loadingBuilder: (BuildContext context,
-                                            Widget child,
-                                            ImageChunkEvent? loadingProgress) {
-                                          if (loadingProgress == null) {
-                                            return child;
-                                          }
-                                          return CircularProgressIndicator(
-                                            color: AppColors.primary,
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded
-                                                        .toDouble() /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                                        .toDouble()
-                                                : null,
-                                          );
-                                        },
-                                      )
-                                    : null,
-                              ),
-                            ],
+                  Container(
+                    width: 70,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                      border: Border.all(
+                        color: Color(0xFFF4F3F4),
+                        width: 2.0,
+                      ),
+                    ),
+                    child: CachedNetworkImage(
+                      // cacheManager: cacheManager,
+                      imageUrl: _avatar == ""
+                          ? "https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=170667a&w=0&k=20&c=m-F9Doa2ecNYEEjeplkFCmZBlc5tm1pl1F7cBCh9ZzM="
+                          : _avatar,
+                      fadeInDuration: Duration(milliseconds: 300),
+                      fadeOutDuration: Duration(milliseconds: 300),
+                      imageBuilder: (context, imageProvider) {
+                        _isLoading = false;
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.contain,
+                            ),
                           ),
-                        ),
+                        );
+                      },
+                      placeholder: (context, url) {
+                        return _isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.primary,
+                                ),
+                              )
+                            : Container();
+                      },
+                      errorWidget: (context, url, error) => Container(
+                        child: Icon(Icons.error),
                       ),
                     ),
                   ),

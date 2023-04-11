@@ -5,6 +5,7 @@ import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:mcommerce_app/providers/order_detail_provider.dart';
 import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
+import 'package:mcommerce_app/widgets/stateless/layout-widget.dart';
 import 'package:provider/provider.dart';
 
 class SuccessModal extends StatefulWidget {
@@ -75,8 +76,14 @@ class _SuccessModalState extends State<SuccessModal> {
                           Provider.of<AuthProvider>(context, listen: false);
                       await orderDetailProvider
                           .getAllOrders(authProvider.user!.accId.toString());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => LayoutWidget(
+                                  selectedIndex: 3,
+                                )),
+                      );
                       authProvider.changePageIndexProfile(3, 60.0);
-                      Navigator.pushNamed(context, Routes.orderPage);
                     },
                     style: ButtonStyle(
                       side: MaterialStateProperty.all<BorderSide>(

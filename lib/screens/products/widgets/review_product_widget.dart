@@ -3,9 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/models/rating_model.dart';
-import 'package:mcommerce_app/providers/rating_provider.dart';
 import 'package:mcommerce_app/widgets/stateless/star_widget.dart';
-import 'package:provider/provider.dart';
 
 class ReviewProductWidget extends StatelessWidget {
   final List<DataRating> ratings;

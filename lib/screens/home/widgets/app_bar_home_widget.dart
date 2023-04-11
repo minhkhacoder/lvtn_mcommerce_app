@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
+import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:mcommerce_app/widgets/statefull/input_search.dart';
 import 'package:mcommerce_app/widgets/stateless/layout-widget.dart';
+import 'package:provider/provider.dart';
 
 class AppBarHomeWidget extends StatelessWidget {
   const AppBarHomeWidget({Key? key}) : super(key: key);
@@ -57,6 +58,9 @@ class AppBarHomeWidget extends StatelessWidget {
       actions: [
         IconButton(
             onPressed: () {
+              final authProvider =
+                  Provider.of<AuthProvider>(context, listen: false);
+              authProvider.changePageIndexProfile(0, 60.0);
               MaterialPageRoute(
                   builder: (_) => LayoutWidget(
                         selectedIndex: 1,

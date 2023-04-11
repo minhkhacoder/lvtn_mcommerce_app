@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/models/product_model.dart';
 import 'package:mcommerce_app/providers/rating_provider.dart';
 import 'package:mcommerce_app/screens/products/product_detail_page.dart';

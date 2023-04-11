@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/models/category_model.dart';
 import 'package:mcommerce_app/providers/search_provider.dart';
-import 'package:mcommerce_app/screens/categories/category_page.dart';
+import 'package:mcommerce_app/screens/search/search_key_page.dart';
 import 'package:provider/provider.dart';
 
 import 'package:mcommerce_app/config/themes/app_colors.dart';
@@ -487,7 +487,13 @@ class _FilterPageState extends State<FilterPage> {
 
                         searchProvider.filterProducts(selectedPrice, catId,
                             _selectedBrands, selectedRating);
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => SearchKeyPage(
+                                    title: 'Search',
+                                  )),
+                        );
                       }))
             ],
           ),

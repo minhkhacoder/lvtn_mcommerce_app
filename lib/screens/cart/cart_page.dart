@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:mcommerce_app/config/routes/routes.dart';
-import 'package:mcommerce_app/config/themes/app_colors.dart';
-import 'package:mcommerce_app/config/themes/app_font_family.dart';
-import 'package:mcommerce_app/models/cart_model.dart';
-import 'package:mcommerce_app/providers/cart_provider.dart';
-import 'package:mcommerce_app/providers/delivery_provider.dart';
-import 'package:mcommerce_app/providers/payment_provider.dart';
-import 'package:mcommerce_app/providers/rating_provider.dart';
-import 'package:mcommerce_app/screens/products/widgets/item_cart_widget.dart';
-import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:mcommerce_app/widgets/stateless/button_widget.dart';
+import 'package:mcommerce_app/screens/products/widgets/item_cart_widget.dart';
+import 'package:mcommerce_app/providers/payment_provider.dart';
+import 'package:mcommerce_app/providers/delivery_provider.dart';
+import 'package:mcommerce_app/providers/cart_provider.dart';
+import 'package:mcommerce_app/models/cart_model.dart';
+import 'package:mcommerce_app/config/themes/app_font_family.dart';
+import 'package:mcommerce_app/config/themes/app_colors.dart';
+import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -136,10 +135,6 @@ class _CartPageState extends State<CartPage> {
                                   onTap: () {
                                     cartProvider
                                         .deleteCartItem(cart.id.toString());
-
-                                    // setState(() {
-                                    //   carts = cartProvider.carts;
-                                    // });
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
