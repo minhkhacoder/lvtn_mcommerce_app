@@ -14,17 +14,25 @@ class AppBarProfileWidget extends StatefulWidget {
 }
 
 class _AppBarProfileWidgetState extends State<AppBarProfileWidget> {
-  String _avatar = "";
   bool _isLoading = true;
+  late String imageUrl = "";
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final authProvider = Provider.of<AuthProvider>(context, listen: true);
+    String newImageUrl = authProvider.user?.cusAvatar == null
+        ? "https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=170667a&w=0&k=20&c=m-F9Doa2ecNYEEjeplkFCmZBlc5tm1pl1F7cBCh9ZzM="
+        : authProvider.user!.cusAvatar.toString();
+
+    if (newImageUrl != imageUrl) {
+      DefaultCacheManager().removeFile(imageUrl);
+      imageUrl = newImageUrl;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: true);
-
-    setState(() {
-      _avatar = authProvider.user!.cusAvatar?.toString() ?? "";
-      // print(_avatar);
-    });
     return AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -64,9 +72,7 @@ class _AppBarProfileWidgetState extends State<AppBarProfileWidget> {
                     ),
                     child: CachedNetworkImage(
                       // cacheManager: cacheManager,
-                      imageUrl: _avatar == ""
-                          ? "https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=170667a&w=0&k=20&c=m-F9Doa2ecNYEEjeplkFCmZBlc5tm1pl1F7cBCh9ZzM="
-                          : _avatar,
+                      imageUrl: imageUrl,
                       fadeInDuration: Duration(milliseconds: 300),
                       fadeOutDuration: Duration(milliseconds: 300),
                       imageBuilder: (context, imageProvider) {
@@ -140,7 +146,6 @@ class _AppBarProfileWidgetState extends State<AppBarProfileWidget> {
                     child: IconButton(
                         color: AppColors.primary,
                         onPressed: () {
-                          authProvider.loadUserData();
                           authProvider.changePageIndexProfile(1, 60.0);
                         },
                         icon: Icon(

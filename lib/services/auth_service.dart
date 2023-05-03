@@ -14,38 +14,31 @@ class AuthService {
       final response = await http.post(Uri.parse('${_baseUrl}/customer/login'),
           body: {'phone': phone, 'password': password});
 
-      if (response.statusCode == 200) {
-        final jsonBody = json.decode(response.body);
-        final user = User.fromJson(jsonBody);
-        return user;
-      } else {
-        throw Exception('Failed to login');
-      }
+      final jsonBody = json.decode(response.body);
+      final user = User.fromJson(jsonBody);
+      return user;
     } catch (e) {
       throw Exception(e);
     }
   }
 
-  Future<String> signup(String username, String phone, String password) async {
+  Future<User> signup(String username, String phone, String password) async {
     try {
       final response = await http.post(
         Uri.parse('${_baseUrl}/customer/signup'),
         body: {'username': username, 'phone': phone, 'password': password},
       );
 
-      // print(response.body);
-      if (response.statusCode == 200) {
-        return "Account registered successfully!";
-      } else {
-        throw Exception('Failed to sign up');
-      }
+      final jsonBody = json.decode(response.body);
+      final user = User.fromJson(jsonBody);
+      return user;
     } catch (e) {
       throw Exception(e);
     }
   }
 
-  Future<String> updateInfoAccount(String id, String? username, String? email,
-      String? gender, String? address, File? avatar) async {
+  Future<Map<String, dynamic>> updateInfoAccount(String id, String? username,
+      String? email, String? gender, String? address, File? avatar) async {
     final prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('accessToken') ?? '';
     final Map<String, String> headers = {
@@ -81,13 +74,7 @@ class AuthService {
       final response = await request.send();
       final responseString = await response.stream.bytesToString();
 
-      print(responseString);
-
-      if (response.statusCode == 200) {
-        return json.decode(responseString)['avatar'];
-      } else {
-        throw Exception('Failed to update information');
-      }
+      return json.decode(responseString);
     } catch (e) {
       throw Exception(e);
     }

@@ -10,32 +10,39 @@ class AuthProvider with ChangeNotifier {
   String? _accessToken;
   String? _refreshToken;
   bool _isAuthenticated = false;
-  bool _isSignup = false;
+  late bool _isSignup;
+  late bool _isUpdate;
   int _selectIndexProfile = 0;
   double _sizeHeightAppBar = 110.0;
-
+  late String _message = '';
   Data? get user => _user;
   String? get accessToken => _accessToken;
   String? get refreshToken => _refreshToken;
+  String get message => _message;
   bool get isAuthenticated => _isAuthenticated;
   bool get isSignup => _isSignup;
+  bool get isUpdate => _isUpdate;
   int get selectIndexProfile => _selectIndexProfile;
   double get sizeHeightAppBar => _sizeHeightAppBar;
 
   Future<void> login(String phone, String password) async {
     final authService = AuthService();
     try {
+      _isAuthenticated = false;
       final user = await authService.login(phone, password);
-      _user = user.data!;
-      _accessToken = user.accessToken!;
-      _refreshToken = user.refreshToken!;
+      _message = user.message!;
+      if (user.success == true) {
+        _user = user.data!;
+        _accessToken = user.accessToken!;
+        _refreshToken = user.refreshToken!;
 
-      // Save tokens and user data to local storage
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('accessToken', _accessToken!);
-      await prefs.setString('refreshToken', _refreshToken!);
-      await prefs.setString('userData', json.encode(_user?.toJson()));
-      _isAuthenticated = true;
+        // Save tokens and user data to local storage
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('accessToken', _accessToken!);
+        await prefs.setString('refreshToken', _refreshToken!);
+        await prefs.setString('userData', json.encode(_user?.toJson()));
+        _isAuthenticated = true;
+      }
       notifyListeners();
     } catch (e) {
       throw Exception(e);
@@ -45,9 +52,9 @@ class AuthProvider with ChangeNotifier {
   Future<void> signup(String username, String phone, String password) async {
     final authService = AuthService();
     try {
-      String user = await authService.signup(username, phone, password);
-      print(user);
-      _isSignup = true;
+      final user = await authService.signup(username, phone, password);
+      _message = user.message!;
+      _isSignup = user.success!;
       notifyListeners();
     } catch (e) {
       throw Exception(e);
@@ -61,10 +68,14 @@ class AuthProvider with ChangeNotifier {
     prefs.remove('accessToken');
     prefs.remove('refreshToken');
     prefs.remove('userData');
+    prefs.remove('cart');
 
-    _user = Data();
+    _user = null;
     _accessToken = '';
     _refreshToken = '';
+    _message = "Log out successfully!";
+    _isSignup = false;
+    _isUpdate = false;
     _isAuthenticated = false;
     notifyListeners();
   }
@@ -74,6 +85,7 @@ class AuthProvider with ChangeNotifier {
     final userData = prefs.getString('userData');
     if (userData != null) {
       final userJson = json.decode(userData);
+      print(_user?.cusAvatar.toString());
       _user = Data.fromJson(userJson);
       _accessToken = prefs.getString('accessToken') ?? '';
       _refreshToken = prefs.getString('refreshToken') ?? '';
@@ -93,13 +105,15 @@ class AuthProvider with ChangeNotifier {
       String? gender, String? address, File? avatar) async {
     final authService = AuthService();
     try {
-      final avatarLink = await authService.updateInfoAccount(
+      _isUpdate = false;
+      final account = await authService.updateInfoAccount(
           id, username, email, gender, address, avatar);
-      final prefs = await SharedPreferences.getInstance();
-      final userData = prefs.getString('userData');
-      if (userData != null) {
-        final userJson = json.decode(userData);
-        if (userJson != null) {
+      if (account["success"] == true) {
+        final avatarLink = account["avatar"];
+        final prefs = await SharedPreferences.getInstance();
+        final userData = prefs.getString('userData');
+        if (userData != null) {
+          Map<String, dynamic> userJson = json.decode(userData);
           userJson['username'] = username;
           userJson['email'] = email;
           userJson['gender'] = gender;
@@ -108,8 +122,13 @@ class AuthProvider with ChangeNotifier {
             userJson['avatar'] = avatarLink;
           }
           prefs.setString('userData', json.encode(userJson));
+          _user = Data.fromJson(userJson);
+          _isUpdate = true;
+          _message = account['message'];
         }
-        _user = Data.fromJson(userJson);
+      } else {
+        _isUpdate = false;
+        _message = account['message'];
       }
       notifyListeners();
     } catch (e) {

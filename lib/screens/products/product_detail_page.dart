@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:mcommerce_app/widgets/stateless/star_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/heading_widget.dart';
@@ -70,6 +71,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     if (authProvider.isAuthenticated != true) {
       Navigator.pushNamed(context, Routes.loginPage);
+      Fluttertoast.showToast(
+          msg: "Please log in to your account",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 2,
+          backgroundColor: AppColors.orange,
+          textColor: Colors.white,
+          fontSize: 16.0);
     } else {
       if (isOpenItemProduct == false) {
         final cartProvider = Provider.of<CartProvider>(context, listen: false);

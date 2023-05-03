@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
 import 'package:mcommerce_app/widgets/statefull/image_upload_widget.dart';
 import 'package:mcommerce_app/widgets/statefull/input_radio_widget.dart';
@@ -83,9 +85,6 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
               });
             },
             validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter your email';
-              }
               return null;
             },
             initialValue: _email,
@@ -107,12 +106,6 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
                 _address = value!;
               });
             },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter your address';
-              }
-              return null;
-            },
             initialValue: _address,
           ),
           Container(
@@ -127,9 +120,29 @@ class _FormInfoProfileState extends State<FormInfoProfile> {
                   String? id = authProvider.user!.cusId;
                   await authProvider.updateInfoAccount(id!, _username, _email,
                       _gender, _address, _selectedImageFile);
-                  _formKey.currentState?.reset();
-                  await authProvider.loadUserData();
-                  authProvider.changePageIndexProfile(0, 110.0);
+
+                  if (authProvider.isUpdate == true) {
+                    Fluttertoast.showToast(
+                        msg: authProvider.message.toString(),
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: AppColors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    _formKey.currentState?.reset();
+                    await authProvider.loadUserData();
+                    authProvider.changePageIndexProfile(0, 110.0);
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: authProvider.message.toString(),
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: AppColors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
                 }),
           ),
         ],

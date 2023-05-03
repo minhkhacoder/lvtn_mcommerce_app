@@ -4,6 +4,7 @@ import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
 import 'package:mcommerce_app/providers/order_detail_provider.dart';
 import 'package:mcommerce_app/screens/products/widgets/image_product_widget.dart';
+import 'package:mcommerce_app/utils/get_status_order.dart';
 import 'package:provider/provider.dart';
 
 class ProfileOrder extends StatefulWidget {
@@ -28,6 +29,8 @@ class _ProfileOrderState extends State<ProfileOrder> {
             final dateTime =
                 DateTime.parse(_orders[index].createdAt.toString());
             final format = DateFormat('MMMM, dd, yyyy');
+            final idOrder = _orders[index].orId.toString();
+            final statusOrder = _orders[index].status.toString();
             Map<String, List<Map<String, dynamic>>> storeMap = {};
 
             for (var detail in details!) {
@@ -202,11 +205,50 @@ class _ProfileOrderState extends State<ProfileOrder> {
                                                 ],
                                               ),
                                             ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "ID: " + idOrder,
+                                                softWrap: true,
+                                                style: TextStyle(
+                                                  color: AppColors.dark,
+                                                  fontFamily: AppFontFamily
+                                                      .fontSecondary,
+                                                  fontSize: 16.0,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ),
                                     ],
                                   ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: Text(getStatusOrder(statusOrder),
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                AppColors.third),
+                                        foregroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.white),
+                                        padding: MaterialStateProperty.all<
+                                            EdgeInsets>(
+                                          EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 16),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 )
                               ],
                             ),

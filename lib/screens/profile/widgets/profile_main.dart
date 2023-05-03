@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/providers/auth_provider.dart';
@@ -79,6 +80,14 @@ class _ProfileMainState extends State<ProfileMain> {
               final authProvider =
                   Provider.of<AuthProvider>(context, listen: false);
               await authProvider.logout();
+              Fluttertoast.showToast(
+                  msg: authProvider.message.toString(),
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: AppColors.green,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
               Navigator.pushNamed(context, Routes.homePage);
             },
             icon: Icon(

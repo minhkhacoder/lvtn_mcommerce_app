@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
@@ -80,8 +81,15 @@ class _OrderPageState extends State<OrderPage> {
       if (value != null) {
         setState(() {
           _orderAddress = value;
-          // print(_orderAddress);
         });
+        Fluttertoast.showToast(
+            msg: "The delivery address has been provided",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: AppColors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
       }
     });
   }
@@ -101,8 +109,17 @@ class _OrderPageState extends State<OrderPage> {
       orderProvider.addOrderDetail(orderDetail);
     }
     String accId = authProvider.user?.accId ?? '';
-    print(payId);
-    if (payId.isNotEmpty && _orderAddress != "") {
+    if (_orderAddress == null) {
+      Fluttertoast.showToast(
+          msg: "Please provide the delivery address",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: AppColors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+    if (payId.isNotEmpty && _orderAddress != null && _orderAddress != "") {
       bool result =
           await orderProvider.createOrder(accId, shipId, payId, _orderAddress!);
       if (result == true) {
