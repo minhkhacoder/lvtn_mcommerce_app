@@ -2,6 +2,7 @@
     package="com.example.mcommerce_app">
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="mcommerce_app"
         android:requestLegacyExternalStorage="true"
@@ -23,6 +24,8 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <meta-data android:name="com.alan.alan_sdk_project_key"
+    android:value="7494e9655df475ddccdf1513dc71add62e956eca572e1d8b807a3e2338fdd0dc/stage" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

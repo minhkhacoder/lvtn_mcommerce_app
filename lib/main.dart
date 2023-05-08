@@ -14,18 +14,27 @@ import 'package:mcommerce_app/providers/payment_provider.dart';
 import 'package:mcommerce_app/providers/product_provider.dart';
 import 'package:mcommerce_app/providers/rating_provider.dart';
 import 'package:mcommerce_app/providers/search_provider.dart';
+import 'package:mcommerce_app/screens/home/home_page.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: ".env");
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
   await Stripe.instance.applySettings();
+
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -47,6 +56,7 @@ class MyApp extends StatelessWidget {
         title: 'M-Commerce App',
         initialRoute: Routes.getStartedPage,
         onGenerateRoute: Routers.generateRoute,
+        home: HomePage(),
       ),
     );
   }

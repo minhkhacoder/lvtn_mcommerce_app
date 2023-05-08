@@ -35,7 +35,7 @@ class _SearchKeyPageState extends State<SearchKeyPage> {
       backgroundColor: AppColors.bg,
       appBar: PreferredSize(
           child: AppBarSearchWidget(
-            title: widget.title,
+            title: "Search",
           ),
           preferredSize: Size.fromHeight(110.0)),
       body: int.parse(quantity) > 0

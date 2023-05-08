@@ -1,12 +1,21 @@
+import 'package:alan_voice/alan_voice.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mcommerce_app/config/routes/routes.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:mcommerce_app/config/themes/app_font_family.dart';
-import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/screens/home/widgets/slide_category_widget.dart';
 import 'package:mcommerce_app/screens/products/products_page.dart';
 import 'package:mcommerce_app/widgets/statefull/input_search.dart';
 import 'package:mcommerce_app/widgets/statefull/slider_widget.dart';
 import 'package:mcommerce_app/widgets/stateless/layout-widget.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/cart_provider.dart';
+import '../../providers/delivery_provider.dart';
+import '../../providers/payment_provider.dart';
+import '../../providers/search_provider.dart';
+import '../search/search_key_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,6 +25,85 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    setupAlan();
+  }
+
+  setupAlan() {
+    AlanVoice.addButton(
+        "7494e9655df475ddccdf1513dc71add62e956eca572e1d8b807a3e2338fdd0dc/stage",
+        buttonAlign: AlanVoice.BUTTON_ALIGN_RIGHT);
+    AlanVoice.callbacks.add((command) => _handleCommand(command.data));
+  }
+
+  void _handleCommand(Map<String, dynamic> command) {
+    print("command $command");
+    switch (command["command"]) {
+      case "navigation":
+        _navigateTo(command["route"]);
+        break;
+      case "screen":
+        _navigateTo(command["data"]);
+        break;
+      case "search":
+        _search(command['key']);
+        break;
+      default:
+    }
+  }
+
+  void _navigateTo(String screen) {
+    switch (screen) {
+      case "/cart":
+        Navigator.pushNamed(context, Routes.cartPage);
+        break;
+      case "/home":
+        Navigator.pushNamed(context, Routes.homePage);
+        break;
+      case "/checkout":
+        _navigateToCheckOut();
+        break;
+      case "back":
+        Navigator.pop(context);
+        break;
+      default:
+    }
+  }
+
+  void _navigateToCheckOut() async {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    if (cartProvider.carts.length > 0) {
+      final deliveryProvider =
+          Provider.of<DeliveryProvider>(context, listen: false);
+      final paymentProvider =
+          Provider.of<PaymentProvider>(context, listen: false);
+      await deliveryProvider.fetchDeliveries();
+      await paymentProvider.fetchPayments();
+      Navigator.pushNamed(context, Routes.orderPage);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Your cart is empty!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 2,
+          backgroundColor: AppColors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      Navigator.pushNamed(context, Routes.homePage);
+    }
+  }
+
+  void _search(String key) async {
+    final searchProvider = Provider.of<SearchProvider>(context, listen: false);
+    await searchProvider.searchProductByKey(key);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SearchKeyPage(title: key)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutWidget(
