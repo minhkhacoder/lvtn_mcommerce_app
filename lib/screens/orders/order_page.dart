@@ -101,11 +101,8 @@ class _OrderPageState extends State<OrderPage> {
     List<Cart> carts = cartProvider.carts;
     for (int i = 0; i < carts.length; i++) {
       int? quantity = carts[i].quantity;
-      double? price = double.parse(carts[i].price!);
-      OrderDetail orderDetail = OrderDetail(
-          proId: carts[i].id,
-          ordtPrice: quantity! * price,
-          ordtQuantity: quantity);
+      OrderDetail orderDetail =
+          OrderDetail(proId: carts[i].id, ordtQuantity: quantity);
       orderProvider.addOrderDetail(orderDetail);
     }
     String accId = authProvider.user?.accId ?? '';

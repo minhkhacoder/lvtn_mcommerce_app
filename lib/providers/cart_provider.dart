@@ -48,6 +48,8 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  
+
   double get totalPrice {
     double totalPrice = 0.0;
     for (int i = 0; i < _carts.length; i++) {

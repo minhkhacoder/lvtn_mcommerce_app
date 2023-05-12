@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/models/product_model.dart';
+import 'package:mcommerce_app/providers/product_provider.dart';
 import 'package:mcommerce_app/providers/rating_provider.dart';
 import 'package:mcommerce_app/screens/products/product_detail_page.dart';
 import 'package:mcommerce_app/screens/products/widgets/image_product_widget.dart';
@@ -10,10 +11,12 @@ import 'package:provider/provider.dart';
 
 class ItemProductWidget extends StatelessWidget {
   final List<Data> products;
+
   const ItemProductWidget({
     Key? key,
     required this.products,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GridView.count(
@@ -24,32 +27,34 @@ class ItemProductWidget extends StatelessWidget {
       crossAxisSpacing: 16.0,
       physics: NeverScrollableScrollPhysics(),
       children: products.map((item) {
-        String url =
-            item.image != null && item.image!.isNotEmpty ? item.image![0] : '';
-
         return Container(
           child: Column(
             children: [
-              InkWell(
-                onTap: () async {
-                  final ratingProvider =
-                      Provider.of<RatingProvider>(context, listen: false);
-                  await ratingProvider
-                      .fetchAllRatingByProductId(item.id.toString());
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ProductDetailPage(item: item.toJson()),
+              Consumer<ProductProvider>(
+                builder: (context, productProvider, _) {
+                  return InkWell(
+                    onTap: () async {
+                      final ratingProvider =
+                          Provider.of<RatingProvider>(context, listen: false);
+                      await ratingProvider
+                          .fetchAllRatingByProductId(item.id.toString());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProductDetailPage(item: item.toJson()),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.zero,
+                      child: ImageProductWidget(
+                        product: item,
+                        isHeart: false,
+                      ),
                     ),
                   );
                 },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: ImageProductWidget(
-                    image_url: url,
-                  ),
-                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -60,10 +65,9 @@ class ItemProductWidget extends StatelessWidget {
               ),
               Container(
                 padding: EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                    child: TitleProductWidget(
+                child: TitleProductWidget(
                   title: item.name.toString(),
-                )),
+                ),
               ),
               Container(
                 child: PriceProductWidget(

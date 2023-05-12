@@ -37,21 +37,17 @@ class Order {
 class OrderDetail {
   String? proId;
   int? ordtQuantity;
-  double? ordtPrice;
-
-  OrderDetail({this.proId, this.ordtQuantity, this.ordtPrice});
+  OrderDetail({this.proId, this.ordtQuantity});
 
   OrderDetail.fromJson(Map<String, dynamic> json) {
     proId = json['pro_id'];
     ordtQuantity = json['ordt_quantity'];
-    ordtPrice = json['ordt_price'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['pro_id'] = this.proId;
     data['ordt_quantity'] = this.ordtQuantity;
-    data['ordt_price'] = this.ordtPrice;
     return data;
   }
 }

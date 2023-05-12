@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mcommerce_app/config/themes/app_colors.dart';
@@ -16,7 +17,7 @@ class ProfileOrder extends StatefulWidget {
 
 class _ProfileOrderState extends State<ProfileOrder> {
   // List<DataOrderDetail> _orders = [];
-
+  bool _isLoading = true;
   @override
   Widget build(BuildContext context) {
     return Consumer<OrderDetailProvider>(
@@ -102,15 +103,70 @@ class _ProfileOrderState extends State<ProfileOrder> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Container(
-                                        width: 100.0,
-                                        height: 100.0,
-                                        padding: EdgeInsets.zero,
-                                        child: ImageProductWidget(
-                                          image_url: details[index]['products']
-                                              ['image'],
-                                          isHeart: false,
-                                        ),
-                                      ),
+                                          width: 100.0,
+                                          height: 100.0,
+                                          padding: EdgeInsets.zero,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: AppColors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8.0)),
+                                            ),
+                                            padding: EdgeInsets.all(10.0),
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  width: 163,
+                                                  height: 163,
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: details[index]
+                                                        ['products']['image'],
+                                                    fadeInDuration: Duration(
+                                                        milliseconds: 300),
+                                                    fadeOutDuration: Duration(
+                                                        milliseconds: 300),
+                                                    imageBuilder: (context,
+                                                        imageProvider) {
+                                                      _isLoading = false;
+                                                      return Container(
+                                                        width: 163,
+                                                        height: 163,
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image:
+                                                                    imageProvider,
+                                                                fit: BoxFit
+                                                                    .contain)),
+                                                      );
+                                                    },
+                                                    placeholder:
+                                                        (context, url) {
+                                                      return _isLoading
+                                                          ? Container(
+                                                              width: 163,
+                                                              height: 163,
+                                                              child: Center(
+                                                                child:
+                                                                    CircularProgressIndicator(
+                                                                  color: AppColors
+                                                                      .primary,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : Container();
+                                                    },
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Container(
+                                                      width: 163,
+                                                      height: 163,
+                                                      child: Icon(Icons.error),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )),
                                       Flexible(
                                         child: Column(
                                           crossAxisAlignment:

@@ -8,22 +8,16 @@ import 'package:mcommerce_app/providers/cart_provider.dart';
 import 'package:mcommerce_app/screens/auth/widgets/login_form.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    authProvider.loadUserData();
 
-    return FutureBuilder(
-      future: _navigateToNextPage(authProvider, cartProvider),
+    return FutureBuilder<void>(
+      future: _navigateToNextPage(context, authProvider, cartProvider),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
@@ -44,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
                           padding:
                               EdgeInsets.only(top: 292, left: 24, right: 24),
                           decoration: BoxDecoration(color: AppColors.white),
-                          child: LoginForm(),
+                          child: const LoginForm(),
                         ),
                       ),
                       Align(
@@ -108,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> _navigateToNextPage(
+  Future<void> _navigateToNextPage(BuildContext context,
       AuthProvider authProvider, CartProvider cartProvider) async {
     await authProvider.loadUserData();
     if (authProvider.user != null) {

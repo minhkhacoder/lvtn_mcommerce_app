@@ -3,14 +3,9 @@ import 'package:mcommerce_app/config/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mcommerce_app/screens/auth/widgets/signup_form.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends StatelessWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
-  @override
-  _SignUpPageState createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +22,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  padding: EdgeInsets.only(top: 280, left: 24, right: 24),
+                  padding: const EdgeInsets.only(top: 280, left: 24, right: 24),
                   decoration: BoxDecoration(color: AppColors.white),
-                  child: SignUpForm(),
+                  child: const SignUpForm(),
                 ),
               ),
               Align(
@@ -47,12 +42,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         ],
                         tileMode: TileMode.mirror,
                       ),
-                      borderRadius:
-                          BorderRadius.only(bottomRight: Radius.circular(250))),
+                      borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(250))),
                   child: Column(children: [
                     Container(
                       alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(top: 90, left: 24, bottom: 8),
+                      padding:
+                          const EdgeInsets.only(top: 90, left: 24, bottom: 8),
                       child: Text(
                         "SIGNUP",
                         style: TextStyle(
@@ -65,7 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     Container(
                       alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(left: 24),
+                      padding: const EdgeInsets.only(left: 24),
                       child: Text(
                         "Enter your credentials to continue",
                         style: TextStyle(

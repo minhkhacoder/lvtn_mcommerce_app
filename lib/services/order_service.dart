@@ -23,7 +23,7 @@ class OrderService {
         body: json,
         headers: headers,
       );
-      // print(response.body);
+
       if (response.statusCode == 200) {
         return true;
       } else {

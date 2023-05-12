@@ -44,9 +44,9 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
                   },
                   child: CarouselSlider(
                     items: widget.products.map((item) {
-                      String url = item.image != null && item.image!.isNotEmpty
-                          ? item.image![0]
-                          : '';
+                      // String url = item.image != null && item.image!.isNotEmpty
+                      //     ? item.image![0]
+                      //     : '';
                       return Container(
                         margin: EdgeInsets.only(right: 8.0),
                         width: MediaQuery.of(context).size.width,
@@ -70,7 +70,8 @@ class _ProductSlideWidgetState extends State<ProductSlideWidget> {
                               child: Padding(
                                 padding: EdgeInsets.zero,
                                 child: ImageProductWidget(
-                                  image_url: url,
+                                  product: item,
+                                  isHeart: false,
                                 ),
                               ),
                             ),

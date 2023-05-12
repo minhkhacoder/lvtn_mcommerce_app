@@ -105,7 +105,7 @@ class _CartPageState extends State<CartPage> {
           carts.length > 0
               ? GridView.count(
                   crossAxisCount: 1,
-                  childAspectRatio: 3,
+                  childAspectRatio: 2.5,
                   shrinkWrap: true,
                   mainAxisSpacing: 16.0,
                   // crossAxisSpacing: 16.0,
